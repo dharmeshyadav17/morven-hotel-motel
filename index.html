@@ -1,533 +1,451 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Soft Forms — Pastel Motion Graphics</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; overflow: hidden; }
-  body {
-    font-family: Georgia, 'Times New Roman', serif;
-    background: linear-gradient(180deg, #aeb9f2 0%, #f0dcf5 48%, #ffe6d2 100%);
-  }
-  #app { position: fixed; inset: 0; }
-  #app canvas { display: block; cursor: grab; }
-  .vignette {
-    position: fixed; inset: 0; pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 52%, rgba(96, 64, 128, 0.20) 100%);
-  }
-  .ui {
-    position: fixed; top: 38px; left: 44px; pointer-events: none;
-    color: #5d4a6e; animation: fadeDown 1.8s ease 0.3s both;
-  }
-  .ui h1 {
-    font-size: clamp(26px, 4vw, 46px); font-weight: 400;
-    letter-spacing: 0.38em; text-transform: uppercase;
-  }
-  .ui p {
-    margin-top: 10px; font-style: italic;
-    font-size: clamp(13px, 1.4vw, 16px);
-    letter-spacing: 0.14em; opacity: 0.72;
-  }
-  .hint {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    pointer-events: none; color: #6a5578;
-    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
-    animation: fadeUp 1.8s ease 0.9s both; white-space: nowrap;
-  }
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translate(-50%, 16px); }
-    to   { opacity: 0.75; transform: translate(-50%, 0); }
-  }
-</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARMENU.ART — Taste in Augmented Reality</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-  }
-}
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
 </script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#08080c;--bg2:#111116;--cream:#FFF6E9;--muted:#a9a49b;--orange:#FF4D00;--orange2:#FF8A00;--pink:#FF5C9E;--lime:#D8FF3E;--glass:rgba(255,246,233,.07);--line:rgba(255,246,233,.14)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none}
+@media(pointer:coarse){body{cursor:auto}.cursor-dot,.cursor-ring{display:none!important}}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:none}
+@media(pointer:coarse){button{cursor:pointer}}
+::selection{background:var(--orange);color:#000}
+/* PRELOADER */
+#preloader{position:fixed;inset:0;background:#050507;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:transform .9s cubic-bezier(.76,0,.24,1)}
+#preloader.hide{transform:translateY(-100%)}
+.pre-logo{font-family:'Syne';font-weight:800;font-size:clamp(2rem,6vw,4.5rem);letter-spacing:-.02em}
+.pre-logo span{color:var(--orange)}
+.pre-sub{font-family:'Playfair Display';font-style:italic;color:var(--muted);margin-top:.4rem;letter-spacing:.15em;text-transform:uppercase;font-size:.8rem}
+.pre-bar{width:min(420px,70vw);height:2px;background:rgba(255,255,255,.12);margin:2rem 0 1rem;overflow:hidden;border-radius:99px}
+.pre-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--orange),var(--pink),var(--lime))}
+.pre-count{font-size:.9rem;letter-spacing:.3em;color:var(--muted)}
+/* WEBGL */
+#webgl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(60vw 60vw at 70% 20%,rgba(255,77,0,.18),transparent 60%),radial-gradient(50vw 50vw at 15% 80%,rgba(255,92,158,.14),transparent 60%),radial-gradient(40vw 40vw at 50% 50%,rgba(216,255,62,.06),transparent 60%)}
+.grain{position:fixed;inset:-50%;width:200%;height:200%;z-index:50;pointer-events:none;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 8s steps(10) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-2%)}80%{transform:translate(3%,3%)}}
+/* CURSOR */
+.cursor-dot{position:fixed;width:8px;height:8px;background:var(--orange);border-radius:50%;z-index:99999;pointer-events:none;transform:translate(-50%,-50%)}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(255,77,0,.7);border-radius:50%;z-index:99998;pointer-events:none;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s;display:flex;align-items:center;justify-content:center;font-size:.6rem;letter-spacing:.1em}
+.cursor-ring.hover{width:84px;height:84px;background:rgba(255,77,0,.12);backdrop-filter:blur(4px)}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.1rem 2rem;background:linear-gradient(to bottom,rgba(8,8,12,.85),transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{font-family:'Syne';font-weight:800;font-size:1.3rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.6rem}
+.logo-mark{width:34px;height:34px;border-radius:50%;background:conic-gradient(from 0deg,var(--orange),var(--pink),var(--lime),var(--orange));display:grid;place-items:center;color:#000;font-size:1.1rem;animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nav-links{display:flex;gap:2rem;font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+.nav-links a{position:relative;transition:color .3s}
+.nav-links a:hover{color:var(--cream)}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--orange);transition:width .3s}
+.nav-links a:hover::after{width:100%}
+.btn{border:1px solid var(--line);background:var(--glass);color:var(--cream);padding:.85rem 1.6rem;border-radius:99px;font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.6rem;transition:.35s;backdrop-filter:blur(10px)}
+.btn-solid{background:var(--cream);color:#000;border-color:var(--cream)}
+.btn-orange{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
+.btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 10px 30px rgba(255,77,0,.35)}
+.burger{display:none;background:none;border:1px solid var(--line);color:var(--cream);width:44px;height:44px;border-radius:50%;font-size:1.2rem}
+/* LAYOUT */
+main{position:relative;z-index:2}
+section{position:relative;padding:6rem 2rem;max-width:1300px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-size:.75rem;letter-spacing:.3em;text-transform:uppercase;color:var(--orange);border:1px solid rgba(255,77,0,.35);padding:.5rem 1rem;border-radius:99px;background:rgba(255,77,0,.08);margin-bottom:1.5rem}
+.dot{width:7px;height:7px;background:var(--lime);border-radius:50%;box-shadow:0 0 12px var(--lime);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3;transform:scale(.7)}}
+/* HERO */
+#hero{min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:2rem;padding-top:8rem;max-width:1400px}
+.hero-kicker{font-family:'Playfair Display';font-style:italic;font-size:clamp(1.1rem,2vw,1.5rem);color:var(--muted)}
+.hero-kicker em{color:var(--cream)}
+h1{font-family:'Syne';font-weight:800;line-height:.88;letter-spacing:-.04em;font-size:clamp(3.2rem,8.5vw,7.8rem);margin:1rem 0;text-transform:uppercase}
+h1 .line{display:block;overflow:hidden}
+h1 .line span{display:inline-block}
+h1 .outline{color:transparent;-webkit-text-stroke:1.5px var(--cream)}
+h1 .grad{background:linear-gradient(90deg,var(--orange) 10%,var(--pink) 50%,var(--lime) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-desc{color:var(--muted);max-width:46ch;line-height:1.7;font-size:1.02rem}
+.hero-desc strong{color:var(--cream)}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem}
+.hero-meta{display:flex;gap:2.5rem;margin-top:3rem;border-top:1px solid var(--line);padding-top:1.5rem}
+.meta-num{font-family:'Syne';font-size:1.9rem;font-weight:800}
+.meta-label{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.hero-visual{position:relative;height:620px;display:flex;align-items:center;justify-content:center}
+.dish-card{position:relative;width:min(420px,86vw);background:rgba(17,17,22,.72);border:1px solid var(--line);border-radius:28px;backdrop-filter:blur(20px);padding:1.2rem;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.dish-img-wrap{border-radius:18px;overflow:hidden;position:relative;height:280px}
+.dish-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .8s}
+.dish-card:hover img{transform:scale(1.08)}
+.scan{position:absolute;inset:12px;border:1px solid rgba(255,255,255,.25);border-radius:14px;pointer-events:none}
+.scan::before,.scan::after{content:'';position:absolute;width:28px;height:28px;border:2px solid var(--lime)}
+.scan::before{top:-2px;left:-2px;border-right:0;border-bottom:0;border-radius:8px 0 0 0}
+.scan::after{bottom:-2px;right:-2px;border-left:0;border-top:0;border-radius:0 0 8px 0}
+.scan-line{position:absolute;left:12px;right:12px;height:2px;background:var(--lime);box-shadow:0 0 18px var(--lime);animation:scan 2.8s ease-in-out infinite}
+@keyframes scan{0%,100%{top:18px}50%{top:calc(100% - 20px)}}
+.dish-info{display:flex;justify-content:space-between;align-items:end;margin-top:1rem}
+.dish-name{font-family:'Syne';font-size:1.6rem;font-weight:800}
+.dish-tag{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+.dish-price{font-family:'Syne';font-size:1.4rem;color:var(--lime)}
+.dish-nav{display:flex;gap:.6rem;margin-top:1rem}
+.dish-nav button{flex:1;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--cream);padding:.9rem;transition:.3s}
+.dish-nav button:hover,.dish-nav button.active{background:var(--orange);color:#000;border-color:var(--orange)}
+.badge-rotate{position:absolute;top:-40px;right:-10px;width:130px;height:130px;z-index:3}
+.badge-rotate svg{width:100%;height:100%;animation:spin 12s linear infinite}
+.badge-center{position:absolute;inset:0;display:grid;place-items:center;font-size:1.8rem}
+.hint{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);background:rgba(0,0,0,.6);border:1px solid var(--line);padding:.6rem 1.1rem;border-radius:99px;backdrop-filter:blur(8px)}
+/* MARQUEE */
+.marquee-full{max-width:none;padding:0;overflow:hidden}
+.marquee{transform:rotate(-1.5deg);background:var(--orange);color:#000;border-top:2px solid #000;border-bottom:2px solid #000;overflow:hidden;white-space:nowrap;padding:.9rem 0;margin:2rem 0}
+.marquee-track{display:inline-flex;gap:2rem;animation:marq 18s linear infinite;font-family:'Syne';font-weight:800;font-size:1.4rem;letter-spacing:-.02em}
+.marquee-track span:nth-child(even){font-family:'Playfair Display';font-style:italic;font-weight:500}
+@keyframes marq{to{transform:translateX(-50%)}}
+.marquee2{background:var(--cream);transform:rotate(1deg)}
+/* GRID */
+.sec-title{font-family:'Syne';font-size:clamp(2.2rem,5vw,4.2rem);line-height:.95;letter-spacing:-.03em;text-transform:uppercase;margin:.8rem 0 1rem}
+.sec-title i{font-family:'Playfair Display';text-transform:none;font-weight:500;color:var(--orange)}
+.sec-sub{color:var(--muted);max-width:60ch;line-height:1.7}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3rem}
+.m-card{background:linear-gradient(180deg,rgba(255,246,233,.09),rgba(255,246,233,.02));border:1px solid var(--line);border-radius:24px;overflow:hidden;transform-style:preserve-3d;transition:box-shadow .4s;position:relative}
+.m-card:hover{box-shadow:0 20px 60px rgba(255,77,0,.25)}
+.m-card img{width:100%;height:240px;object-fit:cover}
+.m-body{padding:1.3rem}
+.m-top{display:flex;justify-content:space-between;align-items:center}
+.m-cat{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--lime)}
+.m-price{background:var(--lime);color:#000;font-weight:700;padding:.25rem .8rem;border-radius:99px;font-size:.9rem}
+.m-name{font-family:'Syne';font-size:1.4rem;margin:.6rem 0 .4rem}
+.m-desc{font-size:.9rem;color:var(--muted);line-height:1.6}
+.m-foot{display:flex;justify-content:space-between;align-items:center;margin-top:1.1rem}
+.order{border:none;background:var(--cream);color:#000;padding:.7rem 1.2rem;border-radius:99px;font-weight:600;font-size:.8rem;letter-spacing:.08em;transition:.3s}
+.order:hover{background:var(--orange)}
+.ar-mini{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+/* AR */
+#ar{background:linear-gradient(180deg,transparent,rgba(255,77,0,.07),transparent);border-top:1px solid var(--line);border-bottom:1px solid var(--line);max-width:none}
+.ar-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:3rem;align-items:center}
+.phone{width:min(300px,80vw);height:610px;margin:0 auto;background:#000;border:8px solid #222;border-radius:44px;position:relative;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 40px 100px rgba(0,0,0,.6),0 0 80px rgba(255,77,0,.25)}
+.phone img{width:100%;height:100%;object-fit:cover;opacity:.9}
+.phone-ui{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.4),transparent 30%,transparent 70%,rgba(0,0,0,.7));display:flex;flex-direction:column;justify-content:space-between;padding:1.2rem}
+.notch{width:110px;height:26px;background:#000;border-radius:99px;margin:0 auto;border:1px solid #333}
+.ar-tag{align-self:center;background:rgba(0,0,0,.6);border:1px solid var(--lime);color:var(--lime);font-size:.7rem;letter-spacing:.2em;padding:.5rem 1rem;border-radius:99px;backdrop-filter:blur(8px)}
+.cal{font-size:.7rem;color:#fff;letter-spacing:.1em;display:flex;justify-content:space-between}
+.feat{display:flex;gap:1.2rem;padding:1.4rem 0;border-bottom:1px solid var(--line)}
+.feat-num{font-family:'Syne';color:transparent;-webkit-text-stroke:1px var(--orange);font-size:1.8rem;font-weight:800;min-width:60px}
+.feat h4{font-family:'Syne';font-size:1.1rem;margin-bottom:.3rem}
+.feat p{color:var(--muted);font-size:.92rem;line-height:1.6}
+/* GALLERY */
+.gal{display:grid;grid-template-columns:1.2fr .8fr .8fr;grid-template-rows:260px 260px;gap:1rem;margin-top:2.5rem}
+.gal div{border-radius:20px;overflow:hidden;position:relative;border:1px solid var(--line)}
+.gal div:first-child{grid-row:span 2}
+.gal img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.gal div:hover img{transform:scale(1.07)}
+.gal label{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);padding:.4rem .9rem;border-radius:99px;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--line)}
+/* CTA FOOTER */
+footer{position:relative;z-index:2;border-top:1px solid var(--line);background:#050507;padding:5rem 2rem 2rem;text-align:center;overflow:hidden}
+.foot-big{font-family:'Syne';font-weight:800;font-size:clamp(2.8rem,9vw,7rem);line-height:.9;letter-spacing:-.04em;text-transform:uppercase}
+.foot-big span{background:linear-gradient(90deg,var(--orange),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.foot-row{display:flex;justify-content:space-between;max-width:1300px;margin:3rem auto 0;color:var(--muted);font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;flex-wrap:wrap;gap:1rem}
+/* DOCK */
+#dock{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:90;display:flex;align-items:center;gap:.9rem;background:rgba(12,12,16,.75);border:1px solid var(--line);backdrop-filter:blur(18px);padding:.6rem .9rem;border-radius:99px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#dock .d-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--cream);display:grid;place-items:center;font-size:.9rem;transition:.3s}
+#dock .d-btn.active,#dock .d-btn:hover{background:var(--cream);color:#000}
+#dock input[type=range]{width:90px;accent-color:var(--orange)}
+.d-label{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+/* MODAL */
+#modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);display:none;place-items:center;padding:1rem}
+#modal.open{display:grid}
+.modal-card{background:#111116;border:1px solid var(--line);border-radius:24px;max-width:420px;width:100%;padding:2rem;text-align:center}
+.qr{width:180px;height:180px;margin:1.2rem auto;background:#fff;border-radius:16px;display:grid;grid-template-columns:repeat(9,1fr);gap:2px;padding:12px}
+.qr i{background:#000;border-radius:1px}
+.qr i.w{background:#fff}
+/* TOAST */
+#toast{position:fixed;top:90px;right:20px;z-index:300;background:var(--lime);color:#000;padding:.9rem 1.3rem;border-radius:14px;font-weight:600;font-size:.85rem;transform:translateX(150%);transition:.5s cubic-bezier(.2,.9,.2,1)}
+#toast.show{transform:none}
+#mobileMenu{position:fixed;inset:0;background:rgba(8,8,12,.97);z-index:150;display:none;place-items:center;text-align:center}
+#mobileMenu.open{display:grid}
+#mobileMenu a{display:block;font-family:'Syne';font-size:2.5rem;margin:.6rem 0;text-transform:uppercase}
+.reveal{opacity:0;transform:translateY(40px)}
+@media(max-width:980px){
+#hero{grid-template-columns:1fr;padding-top:7rem}
+.hero-visual{height:540px}
+.nav-links{display:none}.burger{display:block}
+.menu-grid{grid-template-columns:1fr 1fr}.ar-inner{grid-template-columns:1fr}.gal{grid-template-columns:1fr 1fr;grid-template-rows:200px 200px 200px}
+#dock{width:92vw;justify-content:space-between;overflow-x:auto}
+}
+@media(max-width:620px){.menu-grid{grid-template-columns:1fr}section{padding:4rem 1.2rem}nav{padding:.9rem 1rem}.hero-meta{gap:1.2rem;flex-wrap:wrap}}
+</style>
 </head>
 <body>
-<div id="app"></div>
-<div class="vignette"></div>
-<div class="ui">
-  <h1>Soft Forms</h1>
-  <p>a pastel dream in motion</p>
+
+<div id="preloader"><div class="pre-logo">armenu<span>.art</span></div><div class="pre-sub">plating the future — in AR</div><div class="pre-bar"><div class="pre-fill" id="preFill"></div></div><div class="pre-count" id="preCount">00%</div></div>
+
+<canvas id="webgl"></canvas>
+<div class="bg-glow"></div>
+<div class="grain"></div>
+<div class="cursor-dot" id="cDot"></div>
+<div class="cursor-ring" id="cRing"></div>
+<div id="toast">Added to AR tray ✦</div>
+
+<nav>
+<div class="logo"><div class="logo-mark">◍</div> armenu.art</div>
+<div class="nav-links"><a href="#hero">Experience</a><a href="#menu">Menu 3D</a><a href="#ar">AR View</a><a href="#gallery">Gallery</a></div>
+<div style="display:flex;gap:.6rem;align-items:center"><a href="#" class="btn btn-orange magnetic" id="tryArBtn" style="padding:.7rem 1.3rem">Try AR ✦</a><button class="burger" id="burger">☰</button></div>
+</nav>
+
+<div id="mobileMenu"><div><a href="#hero">Experience</a><a href="#menu">Menu 3D</a><a href="#ar">AR View</a><a href="#gallery">Gallery</a><br><button class="btn btn-orange" onclick="document.getElementById('mobileMenu').classList.remove('open')">Close</button></div></div>
+
+<main>
+<section id="hero">
+<div>
+<div class="eyebrow"><span class="dot"></span> Live • WebGL + AR Motion System</div>
+<div class="hero-kicker">The restaurant menu, <em>reimagined as cinema</em></div>
+<h1 id="heroTitle"><span class="line"><span>TASTE IN</span></span><span class="line"><span class="outline">AUGMENTED</span></span><span class="line"><span class="grad">REALITY ✦</span></span></h1>
+<p class="hero-desc">Point your phone. Watch dishes <strong>erupt off the table in 3D</strong> — steam, spin, sizzle. <strong>armenu.art</strong> turns every plate into motion graphics. Drag the scene, click the dish, switch plates below.</p>
+<div class="hero-cta"><a href="#menu" class="btn btn-solid magnetic">Explore 3D Menu →</a><a href="#ar" class="btn magnetic">◉ How AR works</a></div>
+<div class="hero-meta"><div><div class="meta-num"><span class="count" data-to="120">0</span>+</div><div class="meta-label">3D Dishes</div></div><div><div class="meta-num"><span class="count" data-to="48">0</span>k</div><div class="meta-label">AR Scans</div></div><div><div class="meta-num"><span class="count" data-to="98">0</span>%</div><div class="meta-label">Wow Rate</div></div></div>
 </div>
-<div class="hint">drag to orbit &nbsp;·&nbsp; scroll to zoom &nbsp;·&nbsp; click the shapes</div>
+<div class="hero-visual">
+<div class="badge-rotate"><svg viewBox="0 0 100 100"><defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs><text style="font-size:10px;letter-spacing:2px;fill:#FFF6E9"><textPath href="#circ">DRAG • SPIN • TASTE • REPEAT • DRAG • </textPath></text></svg><div class="badge-center">🍔</div></div>
+<div class="dish-card" id="dishCard">
+<div class="dish-img-wrap"><img id="dishImg" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80" alt="dish"><div class="scan"></div><div class="scan-line"></div></div>
+<div class="dish-info"><div><div class="dish-tag" id="dishTag">No.01 — Smash Classic</div><div class="dish-name" id="dishName">Volcano Burger</div></div><div class="dish-price" id="dishPrice">$18</div></div>
+<p class="sec-sub" id="dishDesc" style="margin-top:.6rem;font-size:.9rem">Double smashed wagyu, molten cheddar lava, charred brioche. 360° steam in AR.</p>
+<div class="dish-nav"><button class="active" data-dish="0">01 Burger</button><button data-dish="1">02 Sushi</button><button data-dish="2">03 Cake</button></div>
+</div>
+<div class="hint">↔ drag to orbit • scroll to zoom • click dish for burst</div>
+</div>
+</section>
+
+<div class="marquee-full"><div class="marquee"><div class="marquee-track" id="mq1"><span>VOLCANO BURGER ✦</span><span>neon sushi set</span><span>CLOUD CAKE ✦</span><span>truffle ramen</span><span>SMOKED PIZZA ✦</span><span>galaxy cocktail</span><span>VOLCANO BURGER ✦</span><span>neon sushi set</span><span>CLOUD CAKE ✦</span><span>truffle ramen</span></div></div><div class="marquee marquee2"><div class="marquee-track"><span>SCAN • TAP • TASTE • REPEAT ✦ SCAN • TAP • TASTE • REPEAT ✦ SCAN • TAP • TASTE ✦&nbsp;</span><span>SCAN • TAP • TASTE • REPEAT ✦ SCAN • TAP • TASTE • REPEAT ✦ SCAN • TAP • TASTE ✦&nbsp;</span></div></div></div>
+
+<section id="menu">
+<div class="eyebrow"><span class="dot"></span> Motion Menu — 001 / 003</div>
+<h2 class="sec-title reveal">DISHES THAT <i>move,</i> STEAM & GLOW</h2>
+<p class="sec-sub reveal">Every card is linked to the 3D stage behind you. Hover to tilt, click order to fire particles in WebGL. Built with Three.js physical materials, dynamic lights and steam particles.</p>
+<div class="menu-grid">
+<div class="m-card tilt reveal"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80" alt=""><div class="m-body"><div class="m-top"><span class="m-cat">Fire • Burger</span><span class="m-price">$18</span></div><div class="m-name">Volcano Burger</div><div class="m-desc">Molten cheddar core, charcoal bun, kinetic sesame rain in AR.</div><div class="m-foot"><button class="order" data-order="Volcano Burger">Order in AR +</button><span class="ar-mini">◉ 3D + steam</span></div></div></div>
+<div class="m-card tilt reveal"><img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=80" alt=""><div class="m-body"><div class="m-top"><span class="m-cat">Neon • Sushi</span><span class="m-price">$24</span></div><div class="m-name">Tokyo Neon Set</div><div class="m-desc">Salmon levitates, rice glows, wasabi particles orbit your table.</div><div class="m-foot"><button class="order" data-order="Tokyo Neon Set">Order in AR +</button><span class="ar-mini">◉ 3D + orbit</span></div></div></div>
+<div class="m-card tilt reveal"><img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800&q=80" alt=""><div class="m-body"><div class="m-top"><span class="m-cat">Cloud • Dessert</span><span class="m-price">$12</span></div><div class="m-name">Cloud Cake 3.0</div><div class="m-desc">Strawberry chrome glaze, floating cherry, sugar sparkle storm.</div><div class="m-foot"><button class="order" data-order="Cloud Cake">Order in AR +</button><span class="ar-mini">◉ 3D + sparkle</span></div></div></div>
+<div class="m-card tilt reveal"><img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80" alt=""><div class="m-body"><div class="m-top"><span class="m-cat">Smoke • Pizza</span><span class="m-price">$16</span></div><div class="m-name">Smoked Diavola</div><div class="m-desc">Wood-fire smoke simulation curls off the crust in real time.</div><div class="m-foot"><button class="order" data-order="Smoked Diavola">Order in AR +</button><span class="ar-mini">◉ 3D + smoke</span></div></div></div>
+<div class="m-card tilt reveal"><img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=80" alt=""><div class="m-body"><div class="m-top"><span class="m-cat">Steam • Ramen</span><span class="m-price">$15</span></div><div class="m-name">Midnight Ramen</div><div class="m-desc">Broth ripples, noodles lift, chopsticks auto-play motion loop.</div><div class="m-foot"><button class="order" data-order="Midnight Ramen">Order in AR +</button><span class="ar-mini">◉ 3D + ripple</span></div></div></div>
+<div class="m-card tilt reveal"><img src="https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800&q=80" alt=""><div class="m-body"><div class="m-top"><span class="m-cat">Glow • Bar</span><span class="m-price">$11</span></div><div class="m-name">Galaxy Spritz</div><div class="m-desc">Color-shifting liquid shader, ice refracts your room light.</div><div class="m-foot"><button class="order" data-order="Galaxy Spritz">Order in AR +</button><span class="ar-mini">◉ shader</span></div></div></div>
+</div>
+</section>
+
+<section id="ar"><div class="ar-inner">
+<div class="reveal"><div class="phone"><img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80" alt=""><div class="phone-ui"><div class="notch"></div><div class="ar-tag">● AR TRACKING • TABLE 07</div><div class="cal"><span>Volcano Burger — $18</span><span>360°</span></div></div><div class="scan"></div><div class="scan-line"></div></div></div>
+<div><div class="eyebrow"><span class="dot"></span> How armenu.art works</div><h2 class="sec-title reveal">POINT. <i>watch it</i> COOK ITSELF.</h2><div class="feat reveal"><div class="feat-num">01</div><div><h4>Scan the table marker</h4><p>No app needed. WebAR instantly anchors a cinematic 3D stage to your table with soft shadows and real-world lighting.</p></div></div><div class="feat reveal"><div class="feat-num">02</div><div><h4>Motion-graphic plating</h4><p>Ingredients fly in with kinetic typography, steam particles and sizzle sound design — like the website, but on your plate.</p></div></div><div class="feat reveal"><div class="feat-num">03</div><div><h4>Tap to customize & order</h4><p>Spin, explode, change glaze colors. Tap “Serve IRL” and the kitchen gets your exact AR build.</p></div></div><div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-orange magnetic" id="qrBtn">Get AR QR CODE</button><button class="btn magnetic" onclick="window.switchDish((window.currentDish+1)%3)">↻ Shuffle dish</button></div></div>
+</div></section>
+
+<section id="gallery">
+<div class="eyebrow"><span class="dot"></span> Live renders — motion studies</div>
+<h2 class="sec-title reveal">FROM SCREEN <i>to</i> TABLE</h2>
+<div class="gal reveal"><div><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=80" alt=""><label>Fine dining — AR overlay</label></div><div><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80" alt=""><label>Plating study 01</label></div><div><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" alt=""><label>Bowl motion</label></div><div><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80" alt=""><label>Slice physics</label></div><div><img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=80" alt=""><label>Color script</label></div></div>
+</section>
+</main>
+
+<footer><div class="eyebrow" style="margin:0 auto 1rem">● Ready for service</div><div class="foot-big">HUNGRY FOR<br><span>THE FUTURE?</span></div><div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap"><button class="btn btn-orange magnetic" id="footAr">Launch AR Menu ✦</button><a href="#hero" class="btn magnetic">Back to top ↑</a></div><div class="foot-row"><span>© 2026 armenu.art — motion menu systems</span><span>WebGL • Three.js • WebAR • GSAP</span><span>Made to be tasted 👁‍🗨</span></div></footer>
+
+<div id="dock"><button class="d-btn active" data-dish="0" title="Burger">🍔</button><button class="d-btn" data-dish="1" title="Sushi">🍣</button><button class="d-btn" data-dish="2" title="Cake">🍰</button><span class="d-label">Speed</span><input type="range" id="speed" min="0" max="3" step="0.1" value="1"><button class="d-btn" id="wireBtn" title="Wireframe">◍</button><button class="d-btn" id="rotBtn" title="Auto-rotate" style="background:var(--lime)">⟳</button></div>
+
+<div id="modal"><div class="modal-card"><h3 style="font-family:Syne;font-size:1.6rem">SCAN TO TASTE IN AR</h3><p style="color:var(--muted);font-size:.9rem;margin-top:.4rem">Point your phone camera — dish appears on your table</p><div class="qr" id="qr"></div><div style="font-family:Syne;font-weight:800;letter-spacing:.2em">ARMENU.ART/TABLE-07</div><br><button class="btn btn-orange" style="width:100%;justify-content:center" onclick="document.getElementById('modal').classList.remove('open')">Done — I'm hungry</button></div></div>
+
+<script>
+// QR fake pattern
+const qr=document.getElementById('qr');for(let i=0;i<81;i++){const s=document.createElement('i');if(Math.random()>.5)s.classList.add('w');if((i<20&&i%9<3)||(i<3*9&&i%9>5)||(i>54&&i%9<3))s.classList.remove('w');qr.appendChild(s);}
+// Preloader
+let p=0;const fill=document.getElementById('preFill'),cnt=document.getElementById('preCount');
+const pi=setInterval(()=>{p+=Math.random()*14;if(p>=100){p=100;clearInterval(pi);setTimeout(()=>{document.getElementById('preloader').classList.add('hide');gsap.from('#heroTitle .line span',{yPercent:110,duration:1.1,stagger:.12,ease:'power4.out',delay:.3});},400);}fill.style.width=p+'%';cnt.textContent=String(Math.floor(p)).padStart(2,'0')+'%';},140);
+// Cursor
+const dot=document.getElementById('cDot'),ring=document.getElementById('cRing');let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.m-card').forEach(el=>{el.addEventListener('mouseenter',()=>ring.classList.add('hover'));el.addEventListener('mouseleave',()=>ring.classList.remove('hover'));});
+// Magnetic
+document.querySelectorAll('.magnetic').forEach(b=>{b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();gsap.to(b,{x:(e.clientX-r.left-r.width/2)*.25,y:(e.clientY-r.top-r.height/2)*.25,duration:.4});});b.addEventListener('mouseleave',()=>gsap.to(b,{x:0,y:0,duration:.5,ease:'elastic.out(1,.4)'}));});
+// Tilt
+document.querySelectorAll('.tilt').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(900px) rotateY(${x*12}deg) rotateX(${-y*12}deg) translateY(-6px)`;});c.addEventListener('mouseleave',()=>c.style.transform='perspective(900px)');});
+// GSAP scroll
+gsap.registerPlugin(ScrollTrigger);
+gsap.utils.toArray('.reveal').forEach(el=>{gsap.to(el,{opacity:1,y:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}});});
+document.querySelectorAll('.count').forEach(el=>{const to=+el.dataset.to;ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>gsap.fromTo(el,{innerText:0},{innerText:to,duration:1.8,snap:{innerText:1},onUpdate:function(){el.textContent=Math.floor(+el.textContent);}})});});
+// Burger / modal / toast
+document.getElementById('burger').onclick=()=>document.getElementById('mobileMenu').classList.toggle('open');
+document.querySelectorAll('#mobileMenu a').forEach(a=>a.onclick=()=>document.getElementById('mobileMenu').classList.remove('open'));
+const modal=document.getElementById('modal');
+document.getElementById('qrBtn').onclick=()=>modal.classList.add('open');
+document.getElementById('footAr').onclick=()=>modal.classList.add('open');
+document.getElementById('tryArBtn').onclick=e=>{e.preventDefault();modal.classList.add('open');};
+modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open');};
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);}
+document.querySelectorAll('.order').forEach(b=>b.onclick=()=>{toast('Added '+b.dataset.order+' to AR tray ✦');if(window.burst)window.burst();});
+</script>
 
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-/* ============================================================
-   STATE — single consolidated object
-   ============================================================ */
-const state = {
-  renderer: null, scene: null, camera: null, controls: null,
-  clock: null, raycaster: null,
-  pointer: new THREE.Vector2(-10, -10),
-  downPos: { x: 0, y: 0 },
-  floaties: [],
-  burstPool: [],
-  dust: null, dustSpeeds: null, dustCount: 0,
-  blob: null, blobBase: null,
-  hovered: null,
-  intro: 0, introDone: false,
-  assets: { pastelMats: [], geos: {}, tex: {} }
+const canvas=document.getElementById('webgl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+
+const scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x08080c,0.028);
+const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,100);
+camera.position.set(0,2.2,10.5);
+const controls=new OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.dampingFactor=.06;controls.enablePan=false;
+controls.minDistance=6;controls.maxDistance=16;controls.maxPolarAngle=Math.PI/1.7;controls.minPolarAngle=Math.PI/4;
+controls.autoRotate=true;controls.autoRotateSpeed=1.0;
+
+// Lights
+scene.add(new THREE.AmbientLight(0xfff2df,.55));
+const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(5,8,5);key.castShadow=true;key.shadow.mapSize.set(1024,1024);scene.add(key);
+const p1=new THREE.PointLight(0xff4d00,40,30);p1.position.set(-5,3,3);scene.add(p1);
+const p2=new THREE.PointLight(0xff5c9e,35,30);p2.position.set(5,-1,4);scene.add(p2);
+const p3=new THREE.PointLight(0xd8ff3e,15,20);p3.position.set(0,5,-4);scene.add(p3);
+
+// Ground shadow catcher
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.ShadowMaterial({opacity:.35}));
+ground.rotation.x=-Math.PI/2;ground.position.y=-2.6;ground.receiveShadow=true;scene.add(ground);
+const ringGlow=new THREE.Mesh(new THREE.RingGeometry(3.2,3.35,80),new THREE.MeshBasicMaterial({color:0xff4d00,transparent:true,opacity:.6,side:THREE.DoubleSide}));
+ringGlow.rotation.x=-Math.PI/2;ringGlow.position.y=-2.55;scene.add(ringGlow);
+const ring2=ringGlow.clone();ring2.geometry=new THREE.RingGeometry(4.1,4.15,80);ring2.material=ringGlow.material.clone();ring2.material.opacity=.25;ring2.material.color.set(0xd8ff3e);scene.add(ring2);
+
+// Helpers
+function mat(c,r=.35,m=.1,extra={}){return new THREE.MeshPhysicalMaterial({color:c,roughness:r,metalness:m,clearcoat:.6,clearcoatRoughness:.3,...extra});}
+function shadowed(g){g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});return g;}
+
+// DISH 1 — Burger
+function createBurger(){
+const g=new THREE.Group();
+const plate=new THREE.Mesh(new THREE.CylinderGeometry(3,2.6,.25,48),mat(0xf5efe6,.25,.05));plate.position.y=-1.4;g.add(plate);
+const rim=new THREE.Mesh(new THREE.TorusGeometry(2.9,.12,16,80),mat(0xff4d00,.3,.4));rim.rotation.x=Math.PI/2;rim.position.y=-1.35;g.add(rim);
+const bottom=new THREE.Mesh(new THREE.CylinderGeometry(1.7,1.5,.45,32),mat(0xe8a15a,.6));bottom.position.y=-.7;g.add(bottom);
+const patty=new THREE.Mesh(new THREE.CylinderGeometry(1.85,1.85,.4,32),mat(0x4a2412,.85));patty.position.y=-.3;g.add(patty);
+const cheese=new THREE.Mesh(new THREE.BoxGeometry(2.6,.12,2.6),mat(0xffc93c,.4));cheese.position.y=0;cheese.rotation.y=Math.PI/4;g.add(cheese);
+const lettuce=new THREE.Mesh(new THREE.TorusGeometry(1.7,.28,12,32),mat(0x7ddf4a,.6));lettuce.rotation.x=Math.PI/2;lettuce.position.y=.25;lettuce.scale.z=.5;g.add(lettuce);
+const tomato=new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.6,.22,32),mat(0xff2e2e,.35));tomato.position.y=.5;g.add(tomato);
+const top=new THREE.Mesh(new THREE.SphereGeometry(1.7,32,20,0,Math.PI*2,0,Math.PI/2),mat(0xe8a15a,.55));top.position.y=.6;top.scale.y=.85;g.add(top);
+for(let i=0;i<14;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(.09,8,8),mat(0xfff6e9,.5));const a=Math.random()*Math.PI*2,r=Math.random()*1.1;s.position.set(Math.cos(a)*r,.6+1.1+Math.random()*.3,Math.sin(a)*r);g.add(s);}
+return shadowed(g);
+}
+// DISH 2 — Sushi
+function createSushi(){
+const g=new THREE.Group();
+const plate=new THREE.Mesh(new THREE.CylinderGeometry(3,2.6,.22,48),mat(0x111116,.2,.6));plate.position.y=-1.4;g.add(plate);
+const rim=new THREE.Mesh(new THREE.TorusGeometry(2.9,.1,16,80),mat(0xd8ff3e,.3,.5));rim.rotation.x=Math.PI/2;rim.position.y=-1.35;g.add(rim);
+const colors=[0xff7a3d,0xff5c9e,0xffc93c,0x7ddfff];
+for(let i=0;i<4;i++){
+const s=new THREE.Group();
+const rice=new THREE.Mesh(new THREE.BoxGeometry(.9,.5,.7),mat(0xfff6e9,.6));s.add(rice);
+const fish=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,.9,20),mat(colors[i],.35));fish.rotation.z=Math.PI/2;fish.position.y=.45;s.add(fish);
+const nori=new THREE.Mesh(new THREE.BoxGeometry(.95,.18,.75),mat(0x0a0a0a,.7));nori.position.y=.05;s.add(nori);
+const x=(i%2? .85:-.85),z=(i<2? .7:-.7);s.position.set(x,-.7,z);s.rotation.y=x;g.add(s);
+}
+const wasabi=new THREE.Mesh(new THREE.IcosahedronGeometry(.35,1),mat(0x6fdc2a,.5));wasabi.position.set(0,-.6,0);g.add(wasabi);
+const ginger=new THREE.Mesh(new THREE.TorusKnotGeometry(.3,.1,60,10),mat(0xffb6c8,.4));ginger.position.set(0,-.2,0);g.add(ginger);
+g.userData.spin=[wasabi,ginger];return shadowed(g);
+}
+// DISH 3 — Cake
+function createDessert(){
+const g=new THREE.Group();
+const plate=new THREE.Mesh(new THREE.CylinderGeometry(3,2.6,.22,48),mat(0xf5efe6,.2));plate.position.y=-1.4;g.add(plate);
+const rim=new THREE.Mesh(new THREE.TorusGeometry(2.9,.12,16,80),mat(0xff5c9e,.3,.4));rim.rotation.x=Math.PI/2;rim.position.y=-1.35;g.add(rim);
+const cake=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,1.1,40),mat(0xff8fb5,.35));cake.position.y=-.5;g.add(cake);
+const glaze=new THREE.Mesh(new THREE.CylinderGeometry(1.55,1.5,.35,40),mat(0xff2e7a,.15,.2,{clearcoat:1}));glaze.position.y=.15;g.add(glaze);
+const drip=new THREE.Mesh(new THREE.TorusGeometry(1.52,.14,12,40),mat(0xff2e7a,.2));drip.rotation.x=Math.PI/2;drip.position.y=0;g.add(drip);
+const cherry=new THREE.Mesh(new THREE.SphereGeometry(.32,20,20),mat(0xff0000,.15,.1,{clearcoat:1}));cherry.position.y=.75;g.add(cherry);
+for(let i=0;i<3;i++){const c=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.9,12),mat(0xfff6e9,.5));const a=i/3*Math.PI*2;c.position.set(Math.cos(a)*.8,.6,Math.sin(a)*.8);g.add(c);const f=new THREE.Mesh(new THREE.SphereGeometry(.12,12,12),new THREE.MeshBasicMaterial({color:0xffd27a}));f.position.set(c.position.x,1.1,c.position.z);g.add(f);}
+return shadowed(g);
+}
+
+const dishes=[createBurger(),createSushi(),createDessert()];
+const stage=new THREE.Group();scene.add(stage);
+dishes.forEach((d,i)=>{d.visible=i===0;stage.add(d);});
+let current=0;window.currentDish=0;
+stage.position.y=.4;
+
+// Background deco
+const knot=new THREE.Mesh(new THREE.TorusKnotGeometry(7,.7,120,12),new THREE.MeshStandardMaterial({color:0xff4d00,wireframe:true,transparent:true,opacity:.08}));
+knot.position.set(0,0,-8);scene.add(knot);
+const ico=new THREE.Mesh(new THREE.IcosahedronGeometry(1.2,1),new THREE.MeshStandardMaterial({color:0xd8ff3e,wireframe:true,transparent:true,opacity:.35}));
+ico.position.set(-5,2,-2);scene.add(ico);
+const ico2=ico.clone();ico2.material=ico.material.clone();ico2.material.color.set(0xff5c9e);ico2.position.set(5,-1,-3);ico2.scale.setScalar(.7);scene.add(ico2);
+
+// Floating ingredients
+const floaters=[];
+const fGeo=[new THREE.TorusGeometry(.3,.12,10,20),new THREE.SphereGeometry(.22,12,12),new THREE.BoxGeometry(.4,.4,.4),new THREE.ConeGeometry(.22,.5,10)];
+const fCol=[0xff4d00,0xd8ff3e,0xff5c9e,0xffc93c,0xffffff];
+for(let i=0;i<26;i++){const m=new THREE.Mesh(fGeo[i%4],mat(fCol[i%5],.4,.2));m.position.set((Math.random()-.5)*14,(Math.random()-.5)*8,(Math.random()-.5)*6-1);m.userData={s:.4+Math.random()*.8,o:Math.random()*10};floaters.push(m);scene.add(m);}
+
+// Steam particles
+function makePoints(n,color,size,op){
+const geo=new THREE.BufferGeometry();const pos=new Float32Array(n*3);const vel=[];
+for(let i=0;i<n;i++){pos[i*3]=(Math.random()-.5)*4;pos[i*3+1]=Math.random()*5-1;pos[i*3+2]=(Math.random()-.5)*4;vel.push(.008+Math.random()*.02);}
+geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const m=new THREE.PointsMaterial({color,size,transparent:true,opacity:op,depthWrite:false,blending:THREE.AdditiveBlending});
+const p=new THREE.Points(geo,m);p.userData.vel=vel;scene.add(p);return p;
+}
+const steam=makePoints(220,0xffffff,.12,.45);
+const spark=makePoints(350,0xff8a00,.09,.9);
+
+// Burst system
+let bursts=[];
+window.burst=function(){
+const n=36;const geo=new THREE.SphereGeometry(.09,8,8);
+for(let i=0;i<n;i++){const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:[0xff4d00,0xd8ff3e,0xff5c9e,0xffffff][i%4],transparent:true}));m.position.copy(stage.position);m.position.y+=.5;const a=Math.random()*Math.PI*2,b=Math.random()*Math.PI;m.userData.v=new THREE.Vector3(Math.cos(a)*(.05+Math.random()*.12),Math.random()*.12+.04,Math.sin(a)*(.05+Math.random()*.12));m.userData.life=1;scene.add(m);bursts.push(m);}
 };
+canvas.addEventListener('pointerdown',e=>{window.burst();gsap.fromTo(stage.scale,{x:1,y:1,z:1},{x:1.08,y:.92,z:1.08,duration:.15,yoyo:true,repeat:1,ease:'power2.out'});});
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
-function rand(min, max) { return min + Math.random() * (max - min); }
-function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+// Dish data + switching
+const data=[
+{tag:'No.01 — Smash Classic',name:'Volcano Burger',price:'$18',desc:'Double smashed wagyu, molten cheddar lava, charred brioche. 360° steam in AR.',img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80'},
+{tag:'No.02 — Tokyo Neon',name:'Neon Sushi Set',price:'$24',desc:'Levitating salmon nigiri, glowing rice, orbiting wasabi particles.',img:'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=80'},
+{tag:'No.03 — Sugar Cloud',name:'Cloud Cake 3.0',price:'$12',desc:'Chrome strawberry glaze, floating cherry, sugar sparkle storm.',img:'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=800&q=80'}];
+window.switchDish=function(i){
+if(i===current)return;const old=dishes[current];current=i;window.currentDish=i;
+gsap.to(old.scale,{x:.001,y:.001,z:.001,duration:.4,ease:'back.in(1.6)',onComplete:()=>{old.visible=false;old.scale.setScalar(1);const nw=dishes[i];nw.visible=true;nw.scale.setScalar(.001);nw.rotation.y=0;gsap.to(nw.scale,{x:1,y:1,z:1,duration:.8,ease:'elastic.out(1,.55)'});window.burst();}});
+document.querySelectorAll('[data-dish]').forEach(b=>b.classList.toggle('active',+b.dataset.dish===i));
+const d=data[i];gsap.to('#dishCard',{y:14,opacity:0,duration:.25,onComplete:()=>{
+document.getElementById('dishTag').textContent=d.tag;document.getElementById('dishName').textContent=d.name;document.getElementById('dishPrice').textContent=d.price;document.getElementById('dishDesc').textContent=d.desc;document.getElementById('dishImg').src=d.img;
+gsap.to('#dishCard',{y:0,opacity:1,duration:.5,ease:'power3.out'});}});
+p1.color.set(i===0?0xff4d00:i===1?0x00e5ff:0xff5c9e);
+};
+document.querySelectorAll('[data-dish]').forEach(b=>b.onclick=()=>window.switchDish(+b.dataset.dish));
 
-function makeDotTexture() {
-  const c = document.createElement('canvas');
-  c.width = c.height = 64;
-  const ctx = c.getContext('2d');
-  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-  g.addColorStop(0, 'rgba(255,255,255,1)');
-  g.addColorStop(0.4, 'rgba(255,255,255,0.55)');
-  g.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, 64, 64);
-  return new THREE.CanvasTexture(c);
+// Dock controls
+let speedF=1;
+document.getElementById('speed').oninput=e=>{speedF=+e.target.value;controls.autoRotateSpeed=speedF*1.2;};
+let wire=false;document.getElementById('wireBtn').onclick=e=>{wire=!wire;e.currentTarget.classList.toggle('active',wire);scene.traverse(o=>{if(o.isMesh&&o.material&&'wireframe' in o.material)o.material.wireframe=wire;});};
+let rot=true;document.getElementById('rotBtn').onclick=e=>{rot=!rot;controls.autoRotate=rot;e.currentTarget.style.background=rot?'var(--lime)':'transparent';e.currentTarget.style.color=rot?'#000':'var(--cream)';};
+
+// Animate
+const clock=new THREE.Clock();
+function tick(){
+requestAnimationFrame(tick);
+const t=clock.getElapsedTime();
+controls.update();
+stage.rotation.y+=.006*speedF;
+stage.position.y=.4+Math.sin(t*1.4)*.25;
+dishes.forEach((d,i)=>{if(d.visible){d.rotation.y+=.002*speedF; d.position.y=Math.sin(t*2+i)*.08;}});
+if(dishes[1].visible&&dishes[1].userData.spin)dishes[1].userData.spin.forEach((o,k)=>{o.rotation.y+=.02;o.rotation.x+=.01;});
+floaters.forEach(f=>{f.rotation.x+=.008*f.userData.s;f.rotation.y+=.01*f.userData.s;f.position.y+=Math.sin(t+f.userData.o)*.003;});
+knot.rotation.y+=.0008*speedF;knot.rotation.z+=.0005;ico.rotation.x+=.01;ico.rotation.y+=.012;ico2.rotation.y-=.01;
+ringGlow.rotation.z+=.003;ring2.rotation.z-=.002;
+const sp=steam.geometry.attributes.position;for(let i=0;i<sp.count;i++){let y=sp.getY(i)+steam.userData.vel[i]*speedF;if(y>4)y=-1.5;sp.setY(i,y);sp.setX(i,sp.getX(i)+Math.sin(t*2+i)*.002);}sp.needsUpdate=true;
+const sp2=spark.geometry.attributes.position;for(let i=0;i<sp2.count;i++){sp2.setY(i,sp2.getY(i)+Math.sin(t*3+i)*.004);sp2.setX(i,sp2.getX(i)+.003*speedF);if(sp2.getX(i)>7)sp2.setX(i,-7);}sp2.needsUpdate=true;
+bursts=bursts.filter(m=>{m.position.add(m.userData.v);m.userData.v.y-=.003;m.userData.life-=.02;m.material.opacity=Math.max(0,m.userData.life);m.scale.setScalar(Math.max(.01,m.userData.life));if(m.userData.life<=0){scene.remove(m);return false;}return true;});
+// scroll parallax
+const sy=scrollY||0;camera.position.y=2.2+sy*.0006;stage.rotation.x=Math.min(.4,sy*.00025);
+renderer.render(scene,camera);
 }
-
-function makePastel(color) {
-  return new THREE.MeshPhysicalMaterial({
-    color: color,
-    roughness: 0.3,
-    metalness: 0.0,
-    clearcoat: 1.0,
-    clearcoatRoughness: 0.35,
-    sheen: 0.5,
-    sheenRoughness: 0.6,
-    sheenColor: new THREE.Color(0xffffff),
-    envMapIntensity: 0.55
-  });
-}
-
-/* ============================================================
-   RENDERER / SCENE / CAMERA / CONTROLS
-   ============================================================ */
-function initRenderer() {
-  const r = new THREE.WebGLRenderer({ antialias: true });
-  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  r.setSize(window.innerWidth, window.innerHeight);
-  r.shadowMap.enabled = true;
-  r.shadowMap.type = THREE.PCFSoftShadowMap;
-  r.toneMapping = THREE.ACESFilmicToneMapping;
-  r.toneMappingExposure = 1.1;
-  document.getElementById('app').appendChild(r.domElement);
-  state.renderer = r;
-}
-
-function initScene() {
-  const s = new THREE.Scene();
-  s.fog = new THREE.Fog(0xf2dfee, 16, 38);
-  state.scene = s;
-
-  const cam = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 140);
-  cam.position.set(0, 5.5, 17);
-  state.camera = cam;
-
-  const controls = new OrbitControls(cam, state.renderer.domElement);
-  controls.target.set(0, 1.6, 0);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.06;
-  controls.minDistance = 5;
-  controls.maxDistance = 20;
-  controls.maxPolarAngle = Math.PI * 0.55;
-  controls.autoRotate = false;
-  controls.autoRotateSpeed = 0.7;
-  controls.enabled = false;
-  state.controls = controls;
-
-  state.raycaster = new THREE.Raycaster();
-  state.clock = new THREE.Clock();
-}
-
-/* ============================================================
-   LIGHTING & ENVIRONMENT
-   ============================================================ */
-function initLights() {
-  const s = state.scene;
-  s.add(new THREE.HemisphereLight(0xe6dcff, 0xffe2cc, 0.7));
-
-  const key = new THREE.DirectionalLight(0xffffff, 1.5);
-  key.position.set(6, 10, 7);
-  key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
-  key.shadow.camera.near = 1;
-  key.shadow.camera.far = 30;
-  key.shadow.camera.left = -8;
-  key.shadow.camera.right = 8;
-  key.shadow.camera.top = 8;
-  key.shadow.camera.bottom = -8;
-  key.shadow.bias = -0.0004;
-  key.shadow.radius = 5;
-  s.add(key);
-
-  const rim = new THREE.DirectionalLight(0xffc9e3, 0.8);
-  rim.position.set(-7, 5, -7);
-  s.add(rim);
-
-  const fill = new THREE.DirectionalLight(0xc9e4ff, 0.45);
-  fill.position.set(-5, 3, 7);
-  s.add(fill);
-
-  const pmrem = new THREE.PMREMGenerator(state.renderer);
-  const env = pmrem.fromScene(new RoomEnvironment(), 0.04);
-  state.scene.environment = env.texture;
-  pmrem.dispose();
-}
-
-/* ============================================================
-   MATERIALS / GEOMETRIES / TEXTURES — centralized assets
-   ============================================================ */
-function initAssets() {
-  const A = state.assets;
-  A.pastelMats = [
-    makePastel(0xffb9d6), // pink
-    makePastel(0xc6b6ff), // lavender
-    makePastel(0xb2efdc), // mint
-    makePastel(0xffe9cf), // cream
-    makePastel(0xffc9ae), // peach
-    makePastel(0xbfdcff)  // sky
-  ];
-  A.geos.blob    = new THREE.SphereGeometry(1, 72, 72);
-  A.geos.knot    = new THREE.TorusKnotGeometry(0.5, 0.16, 220, 32);
-  A.geos.sphere  = new THREE.SphereGeometry(0.55, 48, 48);
-  A.geos.torus   = new THREE.TorusGeometry(0.55, 0.24, 32, 72);
-  A.geos.capsule = new THREE.CapsuleGeometry(0.26, 0.55, 8, 24);
-  A.geos.bubble  = new THREE.SphereGeometry(0.3, 32, 32);
-  A.geos.platform= new THREE.CylinderGeometry(3.6, 3.95, 0.35, 72);
-  A.geos.ring    = new THREE.TorusGeometry(3.6, 0.05, 16, 120);
-  A.geos.ground  = new THREE.CircleGeometry(45, 64);
-  A.geos.spark   = new THREE.SphereGeometry(0.06, 10, 10);
-  A.tex.dot      = makeDotTexture();
-}
-
-/* ============================================================
-   GENERATION & ASSEMBLY
-   ============================================================ */
-function buildSky() {
-  const geo = new THREE.SphereGeometry(70, 32, 32);
-  const mat = new THREE.ShaderMaterial({
-    side: THREE.BackSide,
-    depthWrite: false,
-    uniforms: {
-      topColor: { value: new THREE.Color(0xaeb9f2) },
-      midColor: { value: new THREE.Color(0xf0dcf5) },
-      botColor: { value: new THREE.Color(0xffe6d2) }
-    },
-    vertexShader: `
-      varying vec3 vWorld;
-      void main() {
-        vec4 wp = modelMatrix * vec4(position, 1.0);
-        vWorld = wp.xyz;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform vec3 topColor;
-      uniform vec3 midColor;
-      uniform vec3 botColor;
-      varying vec3 vWorld;
-      void main() {
-        float h = normalize(vWorld).y;
-        vec3 col = h > 0.0
-          ? mix(midColor, topColor, pow(h, 0.75))
-          : mix(midColor, botColor, pow(-h, 0.65));
-        gl_FragColor = vec4(col, 1.0);
-      }
-    `
-  });
-  state.scene.add(new THREE.Mesh(geo, mat));
-}
-
-function addFloaty(mesh, opts) {
-  const u = mesh.userData;
-  u.baseY = opts.y;
-  u.amp = opts.amp !== undefined ? opts.amp : 0.15;
-  u.speed = opts.speed !== undefined ? opts.speed : 0.8;
-  u.phase = opts.phase !== undefined ? opts.phase : 0;
-  u.rotSpeed = opts.rotSpeed !== undefined ? opts.rotSpeed : 0.3;
-  u.rotSpeedX = opts.rotSpeedX || 0;
-  u.baseScale = opts.scale !== undefined ? opts.scale : 1;
-  u.curScale = u.baseScale;
-  u.pop = 0;
-  u.colorIndex = opts.colorIndex || 0;
-  mesh.position.set(opts.x, opts.y, opts.z || 0);
-  if (opts.rx) mesh.rotation.x = opts.rx;
-  if (opts.rz) mesh.rotation.z = opts.rz;
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  state.scene.add(mesh);
-  state.floaties.push(mesh);
-  return mesh;
-}
-
-function buildWorld() {
-  const A = state.assets;
-  const M = A.pastelMats;
-
-  const platform = new THREE.Mesh(A.geos.platform, M[3]);
-  platform.position.y = -0.175;
-  platform.receiveShadow = true;
-  state.scene.add(platform);
-
-  const ring = new THREE.Mesh(A.geos.ring, M[0]);
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = 0;
-  state.scene.add(ring);
-
-  const ground = new THREE.Mesh(
-    A.geos.ground,
-    new THREE.ShadowMaterial({ opacity: 0.13 })
-  );
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -0.36;
-  ground.receiveShadow = true;
-  state.scene.add(ground);
-
-  // central squishy blob
-  state.blobBase = A.geos.blob.attributes.position.array.slice();
-  const blob = new THREE.Mesh(A.geos.blob, M[0]);
-  addFloaty(blob, { x: 0, y: 1.32, z: 0, scale: 1.18, amp: 0.1, speed: 0.7, phase: 0, rotSpeed: 0.15, colorIndex: 0 });
-  state.blob = blob;
-
-  addFloaty(new THREE.Mesh(A.geos.knot, M[1]),    { x: -2.7, y: 2.5,  z: -0.7, scale: 1,    amp: 0.22, speed: 0.6, phase: 1.3, rotSpeed: 0.4,  rotSpeedX: 0.25, colorIndex: 1 });
-  addFloaty(new THREE.Mesh(A.geos.sphere, M[2]),  { x: 2.6,  y: 1.7,  z: 0.6,  scale: 1,    amp: 0.18, speed: 0.9, phase: 2.1, rotSpeed: 0.2,  colorIndex: 2 });
-  addFloaty(new THREE.Mesh(A.geos.torus, M[4]),   { x: 2.0,  y: 3.3,  z: -1.5, scale: 1,    amp: 0.2,  speed: 0.7, phase: 0.6, rotSpeed: 0.35, rotSpeedX: 0.4, rx: 0.5, colorIndex: 4 });
-  addFloaty(new THREE.Mesh(A.geos.capsule, M[3]), { x: -2.1, y: 1.0,  z: 1.4,  scale: 1,    amp: 0.14, speed: 1.0, phase: 3.4, rotSpeed: 0.3,  rz: 0.7, colorIndex: 3 });
-  addFloaty(new THREE.Mesh(A.geos.bubble, M[5]),  { x: 1.0,  y: 0.85, z: 1.7,  scale: 1,    amp: 0.2,  speed: 1.2, phase: 4.2, rotSpeed: 0.1,  colorIndex: 5 });
-  addFloaty(new THREE.Mesh(A.geos.bubble, M[0]),  { x: -1.3, y: 3.6,  z: -0.6, scale: 0.8,  amp: 0.24, speed: 0.9, phase: 5.1, rotSpeed: 0.15, colorIndex: 0 });
-  addFloaty(new THREE.Mesh(A.geos.sphere, M[1]),  { x: 3.4,  y: 2.6,  z: 1.2,  scale: 0.55, amp: 0.2,  speed: 1.1, phase: 2.8, rotSpeed: 0.25, colorIndex: 1 });
-
-  buildDust();
-  buildBurstPool();
-}
-
-function buildDust() {
-  const count = 160;
-  const positions = new Float32Array(count * 3);
-  const speeds = new Float32Array(count);
-  for (let i = 0; i < count; i++) {
-    const r = 3 + Math.random() * 9;
-    const a = Math.random() * Math.PI * 2;
-    positions[i * 3]     = Math.cos(a) * r;
-    positions[i * 3 + 1] = Math.random() * 9;
-    positions[i * 3 + 2] = Math.sin(a) * r;
-    speeds[i] = 0.1 + Math.random() * 0.25;
-  }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const mat = new THREE.PointsMaterial({
-    size: 0.12, map: state.assets.tex.dot, transparent: true,
-    opacity: 0.55, depthWrite: false, color: 0xffffff
-  });
-  state.dust = new THREE.Points(geo, mat);
-  state.dustSpeeds = speeds;
-  state.dustCount = count;
-  state.scene.add(state.dust);
-}
-
-function buildBurstPool() {
-  const M = state.assets.pastelMats;
-  for (let i = 0; i < 90; i++) {
-    const m = new THREE.Mesh(state.assets.geos.spark, M[i % M.length]);
-    m.visible = false;
-    state.scene.add(m);
-    state.burstPool.push({
-      mesh: m, vel: new THREE.Vector3(),
-      life: 0, maxLife: 1, baseScale: 1
-    });
-  }
-}
-
-/* ============================================================
-   ANIMATION
-   ============================================================ */
-function updateIntro(dt) {
-  if (state.introDone) return;
-  state.intro = Math.min(state.intro + dt / 2.2, 1);
-  const k = easeOutCubic(state.intro);
-  const r = THREE.MathUtils.lerp(17, 10.5, k);
-  const y = THREE.MathUtils.lerp(5.5, 2.6, k);
-  state.camera.position.set(0, y, r);
-  state.camera.lookAt(0, 1.6, 0);
-  if (state.intro >= 1) {
-    state.introDone = true;
-    state.controls.enabled = true;
-    state.controls.autoRotate = true;
-  }
-}
-
-function updateFloaties(t, dt) {
-  for (const f of state.floaties) {
-    const u = f.userData;
-    f.position.y = u.baseY + Math.sin(t * u.speed + u.phase) * u.amp;
-    f.rotation.y += u.rotSpeed * dt;
-    f.rotation.x += u.rotSpeedX * dt;
-    const target = (state.hovered === f) ? u.baseScale * 1.14 : u.baseScale;
-    u.curScale += (target - u.curScale) * Math.min(dt * 8, 1);
-    u.pop = Math.max(0, u.pop - dt * 3);
-    f.scale.setScalar(u.curScale * (1 + u.pop * 0.22));
-  }
-}
-
-function updateBlob(t) {
-  const geo = state.assets.geos.blob;
-  const pos = geo.attributes.position;
-  const base = state.blobBase;
-  for (let i = 0; i < pos.count; i++) {
-    const i3 = i * 3;
-    const x = base[i3], y = base[i3 + 1], z = base[i3 + 2];
-    const w = Math.sin(x * 2.4 + t * 1.3) * Math.cos(y * 2.1 + t * 1.0) * Math.sin(z * 2.6 + t * 0.8);
-    const d = 1 + w * 0.07;
-    pos.setXYZ(i, x * d, y * d, z * d);
-  }
-  pos.needsUpdate = true;
-  geo.computeVertexNormals();
-}
-
-function updateDust(dt, t) {
-  const pos = state.dust.geometry.attributes.position;
-  const arr = pos.array;
-  for (let i = 0; i < state.dustCount; i++) {
-    const i3 = i * 3;
-    arr[i3 + 1] += state.dustSpeeds[i] * dt;
-    if (arr[i3 + 1] > 9) arr[i3 + 1] = 0;
-    arr[i3] += Math.sin(t * 0.4 + i * 1.7) * 0.0012;
-  }
-  pos.needsUpdate = true;
-}
-
-function updateBurst(dt) {
-  for (const p of state.burstPool) {
-    if (p.life <= 0) continue;
-    p.life -= dt;
-    p.vel.y -= 4.5 * dt;
-    p.mesh.position.addScaledVector(p.vel, dt);
-    const k = Math.max(p.life / p.maxLife, 0);
-    p.mesh.scale.setScalar(Math.max(k, 0.001) * p.baseScale);
-    p.mesh.rotation.x += dt * 3;
-    p.mesh.rotation.y += dt * 2;
-    if (p.life <= 0) p.mesh.visible = false;
-  }
-}
-
-function updateHover() {
-  state.raycaster.setFromCamera(state.pointer, state.camera);
-  const hits = state.raycaster.intersectObjects(state.floaties, false);
-  const h = hits.length ? hits[0].object : null;
-  if (h !== state.hovered) {
-    state.hovered = h;
-    state.renderer.domElement.style.cursor = h ? 'pointer' : 'grab';
-  }
-}
-
-function animate() {
-  requestAnimationFrame(animate);
-  const dt = Math.min(state.clock.getDelta(), 0.05);
-  const t = state.clock.elapsedTime;
-
-  updateIntro(dt);
-  updateFloaties(t, dt);
-  updateBlob(t);
-  updateDust(dt, t);
-  updateBurst(dt);
-  updateHover();
-
-  state.controls.update();
-  state.renderer.render(state.scene, state.camera);
-}
-
-/* ============================================================
-   INTERACTION
-   ============================================================ */
-function burst(pos) {
-  const M = state.assets.pastelMats;
-  let count = 0;
-  for (const p of state.burstPool) {
-    if (p.life > 0) continue;
-    p.life = p.maxLife = 0.7 + Math.random() * 0.5;
-    p.mesh.visible = true;
-    p.mesh.material = M[Math.floor(Math.random() * M.length)];
-    p.mesh.position.copy(pos);
-    p.vel.set((Math.random() - 0.5) * 2.4, Math.random() * 2.2 + 0.8, (Math.random() - 0.5) * 2.4);
-    p.baseScale = 0.6 + Math.random() * 0.9;
-    p.mesh.scale.setScalar(p.baseScale);
-    if (++count >= 16) break;
-  }
-}
-
-function onPointerMove(e) {
-  state.pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
-  state.pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
-}
-
-function onPointerDown(e) {
-  state.downPos.x = e.clientX;
-  state.downPos.y = e.clientY;
-}
-
-function onPointerUp(e) {
-  const dx = e.clientX - state.downPos.x;
-  const dy = e.clientY - state.downPos.y;
-  if (dx * dx + dy * dy > 36) return;
-  state.raycaster.setFromCamera(state.pointer, state.camera);
-  const hits = state.raycaster.intersectObjects(state.floaties, false);
-  if (hits.length) {
-    const obj = hits[0].object;
-    burst(hits[0].point);
-    obj.userData.pop = 1;
-    const u = obj.userData;
-    u.colorIndex = (u.colorIndex + 1) % state.assets.pastelMats.length;
-    obj.material = state.assets.pastelMats[u.colorIndex];
-  }
-}
-
-function onResize() {
-  state.camera.aspect = window.innerWidth / window.innerHeight;
-  state.camera.updateProjectionMatrix();
-  state.renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function bindEvents() {
-  window.addEventListener('resize', onResize);
-  window.addEventListener('pointermove', onPointerMove);
-  window.addEventListener('pointerdown', onPointerDown);
-  window.addEventListener('pointerup', onPointerUp);
-}
-
-/* ============================================================
-   INIT & START
-   ============================================================ */
-function init() {
-  initRenderer();
-  initScene();
-  initLights();
-  initAssets();
-  buildSky();
-  buildWorld();
-  bindEvents();
-}
-
-init();
-animate();
+tick();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 </script>
 </body>
 </html>
