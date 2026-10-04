@@ -1,1041 +1,533 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Morven Hotel Motel | Outback Stay on the Warrego Hwy — 4.7 ★</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        outback: '#131615',
-        coal: '#1D2221',
-        moss: '#2E3B33',
-        sand: '#F5EFE3',
-        cream: '#FBF8F1',
-        terra: '#C45A3C',
-        terradark: '#9E4228',
-        gold: '#C9A86A',
-        golddark: '#A3864D',
-        eucaly: '#5A7A5B',
-        line: '#E8DDC9'
-      },
-      fontFamily: {
-        serif: ['"Playfair Display"', 'serif'],
-        sans: ['Inter', 'sans-serif'],
-        hand: ['Caveat', 'cursive']
-      },
-      boxShadow: {
-        soft: '0 20px 60px -15px rgba(0,0,0,.25)',
-        card: '0 10px 40px -10px rgba(0,0,0,.18)',
-        gold: '0 10px 30px -8px rgba(201,168,106,.6)'
-      }
-    }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Soft Forms — Pastel Motion Graphics</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: linear-gradient(180deg, #aeb9f2 0%, #f0dcf5 48%, #ffe6d2 100%);
+  }
+  #app { position: fixed; inset: 0; }
+  #app canvas { display: block; cursor: grab; }
+  .vignette {
+    position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(96, 64, 128, 0.20) 100%);
+  }
+  .ui {
+    position: fixed; top: 38px; left: 44px; pointer-events: none;
+    color: #5d4a6e; animation: fadeDown 1.8s ease 0.3s both;
+  }
+  .ui h1 {
+    font-size: clamp(26px, 4vw, 46px); font-weight: 400;
+    letter-spacing: 0.38em; text-transform: uppercase;
+  }
+  .ui p {
+    margin-top: 10px; font-style: italic;
+    font-size: clamp(13px, 1.4vw, 16px);
+    letter-spacing: 0.14em; opacity: 0.72;
+  }
+  .hint {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    pointer-events: none; color: #6a5578;
+    font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    animation: fadeUp 1.8s ease 0.9s both; white-space: nowrap;
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translate(-50%, 16px); }
+    to   { opacity: 0.75; transform: translate(-50%, 0); }
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
   }
 }
 </script>
-<style>
-  html{scroll-behavior:smooth; scroll-padding-top:150px}
-  body{background:#FBF8F1; color:#131615; font-family:Inter,sans-serif; overflow-x:hidden}
-  ::selection{background:#C45A3C; color:#fff}
-  .texture-grain{background-image: radial-gradient(rgba(0,0,0,.06) 1px, transparent 1px); background-size:18px 18px}
-  .hero-grid-img{transition:transform .8s cubic-bezier(.16,1,.3,1), filter .5s}
-  .hero-grid-img:hover{transform:scale(1.04)}
-  .tab-link{position:relative; white-space:nowrap}
-  .tab-link:after{content:''; position:absolute; left:0; bottom:-2px; height:3px; width:0; background:#C45A3C; border-radius:99px; transition:.35s}
-  .tab-link.active:after{width:100%}
-  .tab-link.active{color:#131615}
-  .marquee-track{display:flex; width:max-content; animation:marquee 26s linear infinite}
-  @keyframes marquee{to{transform:translateX(-50%)}}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-  @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(196,90,60,.5)}100%{box-shadow:0 0 0 18px rgba(196,90,60,0)}}
-  .pulse-ring{animation:pulse-ring 1.8s ease-out infinite}
-  .reveal{opacity:0; transform:translateY(36px)}
-  .star-gold{color:#C9A86A}
-  .glass{background:rgba(255,255,255,.82); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px)}
-  .room-card{transition:.45s cubic-bezier(.16,1,.3,1)}
-  .room-card:hover{transform:translateY(-6px)}
-  .room-card.selected{outline:3px solid #C45A3C; outline-offset:3px}
-  .gallery-item img{transition:.7s cubic-bezier(.16,1,.3,1)}
-  .gallery-item:hover img{transform:scale(1.08)}
-  .btn-sheen{position:relative; overflow:hidden}
-  .btn-sheen:after{content:''; position:absolute; top:0; left:-80%; width:50%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent); transform:skewX(-20deg); transition:.6s}
-  .btn-sheen:hover:after{left:130%}
-  input[type="date"]::-webkit-calendar-picker-indicator{cursor:pointer; opacity:.7}
-  .custom-scroll::-webkit-scrollbar{height:8px; width:8px}
-  .custom-scroll::-webkit-scrollbar-thumb{background:#C9A86A; border-radius:99px}
-  .custom-scroll::-webkit-scrollbar-track{background:#E8DDC9}
-  #lightbox{transition:.35s}
-  .map-frame{filter:sepia(.18) saturate(1.1) contrast(1.02)}
-  .ticket-notch{--r:14px; -webkit-mask: radial-gradient(var(--r) at left center, transparent 98%, black) left / 51% 100% no-repeat, radial-gradient(var(--r) at right center, transparent 98%, black) right / 51% 100% no-repeat}
-  .dashed-line{background-image:linear-gradient(to right, #C9A86A 55%, transparent 45%); background-size:12px 2px; background-repeat:repeat-x; height:2px}
-  .review-card{transition:.4s}
-  .review-card:hover{transform:translateY(-4px); box-shadow:0 20px 50px -15px rgba(0,0,0,.22)}
-  .nav-blur.scrolled{background:rgba(19,22,21,.92); backdrop-filter:blur(14px); box-shadow:0 10px 30px rgba(0,0,0,.25)}
-  @media(max-width:768px){html{scroll-padding-top:132px}}
-</style>
 </head>
-<body class="antialiased">
-
-<!-- TOP NOTICE -->
-<div class="bg-outback text-sand text-[12.5px] md:text-[13px] py-2 px-4 text-center relative z-[60]">
-  <p class="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-2">
-    <span class="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-3 py-0.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Direct bookings open</span>
-    <span class="opacity-90">For best rates & group bookings, please <button onclick="openCall()" class="underline decoration-gold underline-offset-2 font-semibold hover:text-gold">contact the property directly</button> for rates and availability.</span>
-  </p>
+<body>
+<div id="app"></div>
+<div class="vignette"></div>
+<div class="ui">
+  <h1>Soft Forms</h1>
+  <p>a pastel dream in motion</p>
 </div>
+<div class="hint">drag to orbit &nbsp;·&nbsp; scroll to zoom &nbsp;·&nbsp; click the shapes</div>
 
-<!-- NAV -->
-<nav id="mainNav" class="nav-blur sticky top-0 z-50 bg-outback/95 text-cream transition-all duration-300 border-b border-white/10">
-  <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between h-[68px]">
-    <a href="#top" class="flex items-center gap-3 group">
-      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-terra to-golddark flex items-center justify-center shadow-gold relative overflow-hidden">
-        <span class="font-serif font-800 text-2xl font-bold text-white leading-none">M</span>
-        <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition"></div>
-      </div>
-      <div class="leading-tight">
-        <div class="font-serif font-bold text-[18px] tracking-tight">Morven Hotel Motel</div>
-        <div class="text-[11px] tracking-[.22em] uppercase text-gold font-semibold">Outback Queensland • Est. 1876</div>
-      </div>
-    </a>
-    <div class="hidden lg:flex items-center gap-7 text-[13.5px] font-medium tracking-wide">
-      <a href="#overview" class="hover:text-gold transition">Overview</a>
-      <a href="#prices" class="hover:text-gold transition">Prices</a>
-      <a href="#reviews" class="hover:text-gold transition">Reviews</a>
-      <a href="#about" class="hover:text-gold transition">About</a>
-      <a href="#location" class="hover:text-gold transition">Location</a>
-      <a href="#photos" class="hover:text-gold transition">Photos</a>
-    </div>
-    <div class="flex items-center gap-2 md:gap-3">
-      <div class="hidden md:flex items-center gap-1.5 bg-white/10 border border-white/15 rounded-full pl-2 pr-3 py-1.5">
-        <span class="bg-gold text-outback text-[12px] font-extrabold rounded-full px-2 py-0.5">4.7</span>
-        <span class="text-[12px] opacity-90"><i class="fa-solid fa-star text-gold text-[11px]"></i> 150 reviews</span>
-      </div>
-      <a href="tel:+61746548316" class="hidden sm:inline-flex items-center gap-2 text-[13px] font-semibold border border-white/20 rounded-full px-4 py-2 hover:bg-white hover:text-outback transition"><i class="fa-solid fa-phone text-gold"></i> Call</a>
-      <a href="#prices" class="btn-sheen inline-flex items-center gap-2 bg-terra hover:bg-terradark transition text-white text-[13px] font-bold rounded-full px-5 py-2.5 shadow-card">Check availability <i class="fa-solid fa-arrow-right text-[12px]"></i></a>
-      <button id="menuBtn" class="lg:hidden w-10 h-10 grid place-items-center rounded-full border border-white/20"><i class="fa-solid fa-bars"></i></button>
-    </div>
-  </div>
-  <div id="mobileMenu" class="lg:hidden hidden border-t border-white/10 bg-outback px-6 py-4 flex flex-col gap-3 text-[15px] font-medium">
-    <a href="#overview" class="mobile-link py-2 border-b border-white/10">Overview</a>
-    <a href="#prices" class="mobile-link py-2 border-b border-white/10">Prices</a>
-    <a href="#reviews" class="mobile-link py-2 border-b border-white/10">Reviews</a>
-    <a href="#about" class="mobile-link py-2 border-b border-white/10">About</a>
-    <a href="#location" class="mobile-link py-2 border-b border-white/10">Location</a>
-    <a href="#photos" class="mobile-link py-2">Photos</a>
-    <div class="flex gap-2 pt-2">
-      <a href="tel:+61746548316" class="flex-1 text-center bg-white/10 rounded-full py-2.5 font-bold"><i class="fa-solid fa-phone mr-2"></i>Call</a>
-      <button onclick="openDirections()" class="flex-1 bg-white/10 rounded-full py-2.5 font-bold"><i class="fa-solid fa-diamond-turn-right mr-2"></i>Directions</button>
-    </div>
-  </div>
-</nav>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-<!-- TAB BAR -->
-<div class="sticky top-[68px] z-40 glass border-b border-line shadow-sm">
-  <div class="max-w-7xl mx-auto px-4 md:px-6 flex items-center gap-2">
-    <div class="flex-1 flex items-center gap-6 md:gap-8 overflow-x-auto custom-scroll py-3.5 text-[13.5px] md:text-[14px] font-semibold text-stone-500">
-      <a href="#overview" data-tab="overview" class="tab-link active">Overview</a>
-      <a href="#prices" data-tab="prices" class="tab-link">Prices</a>
-      <a href="#reviews" data-tab="reviews" class="tab-link">Reviews <span class="ml-1 text-[11px] bg-outback text-white rounded-full px-2 py-0.5 align-middle">150</span></a>
-      <a href="#about" data-tab="about" class="tab-link">About</a>
-      <a href="#location" data-tab="location" class="tab-link">Location</a>
-      <a href="#photos" data-tab="photos" class="tab-link">Photos</a>
-    </div>
-    <div class="hidden md:flex items-center gap-2 text-[13px] font-semibold pb-1">
-      <span class="text-stone-500">From</span><span class="font-serif text-[18px] font-bold">₹11,564</span><a href="#prices" class="bg-outback text-white rounded-full px-4 py-1.5 hover:bg-terra transition">Book</a>
-    </div>
-  </div>
-</div>
+/* ============================================================
+   STATE — single consolidated object
+   ============================================================ */
+const state = {
+  renderer: null, scene: null, camera: null, controls: null,
+  clock: null, raycaster: null,
+  pointer: new THREE.Vector2(-10, -10),
+  downPos: { x: 0, y: 0 },
+  floaties: [],
+  burstPool: [],
+  dust: null, dustSpeeds: null, dustCount: 0,
+  blob: null, blobBase: null,
+  hovered: null,
+  intro: 0, introDone: false,
+  assets: { pastelMats: [], geos: {}, tex: {} }
+};
 
-<!-- HERO -->
-<header id="top" class="relative bg-outback text-cream overflow-hidden">
-  <div class="absolute inset-0 opacity-25"><img src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover" alt=""><div class="absolute inset-0 bg-gradient-to-b from-outback via-outback/70 to-outback"></div></div>
-  <div class="relative max-w-7xl mx-auto px-4 md:px-6 pt-8 md:pt-12 pb-10">
-    <!-- Breadcrumb + rating -->
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-6 reveal">
-      <div class="text-[12.5px] text-white/60 tracking-wide">Australia <span class="mx-1 text-gold">/</span> Queensland <span class="mx-1 text-gold">/</span> Morven <span class="mx-1 text-gold">/</span> <span class="text-white">Morven Hotel Motel</span></div>
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-[12px] font-semibold rounded-full px-3 py-1"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span> Open now • Bar till late</span>
-        <span class="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 text-[12px] rounded-full px-3 py-1"><i class="fa-solid fa-award text-gold"></i> Travellers' Choice 2026</span>
-      </div>
-    </div>
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function rand(min, max) { return min + Math.random() * (max - min); }
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
 
-    <div class="grid lg:grid-cols-[1.05fr_.95fr] gap-8 items-start">
-      <!-- Left info -->
-      <div>
-        <div class="flex items-center gap-3 mb-3 reveal">
-          <div class="flex items-center gap-1 bg-white rounded-full pl-3 pr-2 py-1.5 shadow-soft">
-            <span class="font-extrabold text-outback text-[15px]">4.7</span>
-            <span class="flex text-[13px] gap-0.5">
-              <i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star-half-stroke star-gold"></i>
-            </span>
-            <a href="#reviews" class="text-[12px] font-semibold text-stone-600 underline underline-offset-2 ml-1">150 reviews</a>
-            <span class="ml-2 bg-outback text-white text-[11px] font-bold rounded-full px-2.5 py-1">Exceptional</span>
-          </div>
-        </div>
-        <h1 class="font-serif text-[42px] md:text-[64px] leading-[1.02] font-bold tracking-tight reveal">Outback soul,<br><span class="italic font-medium text-transparent bg-clip-text bg-gradient-to-r from-gold via-[#E8C88A] to-terra">country hospitality.</span></h1>
-        <p class="mt-4 text-white/70 text-[15px] md:text-[17px] leading-relaxed max-w-xl reveal">Historic pub, modern motel comfort & hearty Warrego Highway hospitality in the heart of Morven. Sleep well, eat well, and wake to big outback skies.</p>
-        <div class="mt-3 flex items-start gap-2 text-[14px] text-white/80 reveal">
-          <i class="fa-solid fa-location-dot text-terra mt-1"></i>
-          <span>78 Warrego Hwy, Morven QLD 4468, Australia <span class="text-white/50">• 0.2 km from Morven town centre</span></span>
-        </div>
-
-        <!-- Action buttons Call Directions Share Check availability -->
-        <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl reveal">
-          <button onclick="openCall()" class="group bg-white text-outback rounded-2xl px-4 py-3.5 flex flex-col items-center gap-1.5 hover:bg-gold hover:text-outback transition shadow-card">
-            <span class="w-9 h-9 rounded-full bg-outback text-white grid place-items-center group-hover:bg-outback group-hover:text-gold transition"><i class="fa-solid fa-phone"></i></span>
-            <span class="text-[13px] font-bold">Call</span><span class="text-[11px] opacity-60 -mt-1">07 4654 8316</span>
-          </button>
-          <button onclick="openDirections()" class="group bg-white/10 border border-white/15 rounded-2xl px-4 py-3.5 flex flex-col items-center gap-1.5 hover:bg-white hover:text-outback transition">
-            <span class="w-9 h-9 rounded-full bg-terra text-white grid place-items-center"><i class="fa-solid fa-diamond-turn-right"></i></span>
-            <span class="text-[13px] font-bold">Directions</span><span class="text-[11px] opacity-60 -mt-1">4h from Toowoomba</span>
-          </button>
-          <button onclick="openShare()" class="group bg-white/10 border border-white/15 rounded-2xl px-4 py-3.5 flex flex-col items-center gap-1.5 hover:bg-white hover:text-outback transition">
-            <span class="w-9 h-9 rounded-full bg-white text-outback grid place-items-center"><i class="fa-solid fa-share-nodes"></i></span>
-            <span class="text-[13px] font-bold">Share</span><span class="text-[11px] opacity-60 -mt-1">Send to mates</span>
-          </button>
-          <a href="#prices" class="group bg-terra rounded-2xl px-4 py-3.5 flex flex-col items-center gap-1.5 hover:bg-terradark transition shadow-gold pulse-ring">
-            <span class="w-9 h-9 rounded-full bg-white text-terra grid place-items-center"><i class="fa-solid fa-calendar-check"></i></span>
-            <span class="text-[13px] font-bold">Check availability</span><span class="text-[11px] opacity-80 -mt-1">From ₹11,564</span>
-          </a>
-        </div>
-
-        <div class="mt-6 flex flex-wrap items-center gap-2 text-[12px] reveal">
-          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1.5"><i class="fa-solid fa-wifi text-emerald-400 mr-1.5"></i>Free Wi-Fi</span>
-          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1.5"><i class="fa-solid fa-square-parking text-gold mr-1.5"></i>Free parking</span>
-          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1.5"><i class="fa-solid fa-utensils text-terra mr-1.5"></i>Hotel restaurant & bar</span>
-          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1.5"><i class="fa-solid fa-snowflake text-sky-300 mr-1.5"></i>Air-con rooms</span>
-          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1.5">+12 more</span>
-        </div>
-      </div>
-
-      <!-- Right gallery mosaic -->
-      <div class="reveal">
-        <div class="grid grid-cols-4 grid-rows-2 gap-3 h-[320px] md:h-[420px]">
-          <div class="col-span-3 row-span-2 rounded-3xl overflow-hidden relative group shadow-soft">
-            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200&auto=format&fit=crop" class="hero-grid-img w-full h-full object-cover" alt="Morven Hotel Motel">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-            <button onclick="goPhotos()" class="absolute bottom-4 left-4 glass text-outback text-[12.5px] font-bold rounded-full px-4 py-2 flex items-center gap-2 hover:bg-white"><i class="fa-solid fa-images text-terra"></i> View all 48 photos</button>
-            <div class="absolute top-4 left-4 bg-outback/80 backdrop-blur text-white text-[12px] font-semibold rounded-full px-3 py-1.5 flex items-center gap-2"><i class="fa-solid fa-video text-terra"></i> Historic Warrego Hwy Stop</div>
-          </div>
-          <div class="rounded-2xl overflow-hidden shadow-soft"><img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=600&auto=format&fit=crop" class="hero-grid-img w-full h-full object-cover" alt=""></div>
-          <div class="rounded-2xl overflow-hidden shadow-soft"><img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=600&auto=format&fit=crop" class="hero-grid-img w-full h-full object-cover" alt=""></div>
-          <div class="rounded-2xl overflow-hidden shadow-soft"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=600&auto=format&fit=crop" class="hero-grid-img w-full h-full object-cover" alt=""></div>
-          <div class="rounded-2xl overflow-hidden relative shadow-soft group cursor-pointer" onclick="goPhotos()">
-            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=600&auto=format&fit=crop" class="hero-grid-img w-full h-full object-cover" alt="">
-            <div class="absolute inset-0 bg-black/55 grid place-items-center text-white text-[13px] font-bold">+44 <br>photos</div>
-          </div>
-        </div>
-        <!-- Mini booking strip -->
-        <div class="mt-3 glass rounded-2xl p-3 flex flex-wrap items-center gap-3 shadow-card border border-white/60">
-          <div class="flex items-center gap-2 text-[13px] flex-1 min-w-[200px] bg-white rounded-xl px-3 py-2.5 border border-line">
-            <i class="fa-regular fa-calendar text-terra"></i>
-            <div class="leading-tight"><div class="font-bold">Sat, 12 Sept → Sun, 13 Sept</div><div class="text-[11.5px] text-stone-500">1 night • 2 adults • 1 room</div></div>
-          </div>
-          <div class="text-right leading-tight">
-            <div class="text-[11px] uppercase tracking-wider text-stone-500 font-semibold">Starting at</div>
-            <div class="font-serif font-bold text-[20px]">₹11,564 <span class="text-[12px] font-sans font-normal text-stone-500">incl. taxes</span></div>
-          </div>
-          <a href="#prices" class="btn-sheen bg-outback text-white rounded-xl px-6 py-3 text-[13.5px] font-bold hover:bg-terra transition">See prices</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- marquee -->
-  <div class="relative border-t border-white/10 bg-black/30 py-3 overflow-hidden">
-    <div class="marquee-track gap-10 text-[12px] tracking-[.25em] uppercase text-white/60 font-semibold">
-      <div class="flex gap-10 pr-10" id="marqueeContent">
-        <span>★ 4.7 Rated Motel</span><span class="text-gold">•</span><span>Warrego Highway</span><span class="text-gold">•</span><span>Country Pub Meals</span><span class="text-gold">•</span><span>Drive-Through Bottleshop</span><span class="text-gold">•</span><span>Pet Friendly*</span><span class="text-gold">•</span><span>Big Outback Skies</span><span class="text-gold">•</span>
-      </div>
-    </div>
-  </div>
-</header>
-
-<main class="max-w-7xl mx-auto px-4 md:px-6">
-
-<!-- OVERVIEW -->
-<section id="overview" class="pt-12 md:pt-16">
-  <div class="grid lg:grid-cols-[1fr_360px] gap-8">
-    <div>
-      <div class="flex items-center gap-3 mb-3 reveal">
-        <span class="text-[12px] font-bold tracking-[.2em] uppercase text-terra">01 — Overview</span><div class="h-px flex-1 bg-line"></div>
-      </div>
-      <h2 class="font-serif text-[32px] md:text-[44px] font-bold leading-tight reveal">A legendary highway stop <span class="italic font-medium text-terra">since 1876.</span></h2>
-      <p class="mt-4 text-[15px] md:text-[16.5px] leading-relaxed text-stone-600 reveal">Sitting proudly on the Warrego Highway at <strong class="text-outback">78 Warrego Hwy, Morven QLD 4468</strong>, the Morven Hotel Motel blends old-world pub charm with clean, comfortable motel rooms. Whether you're crossing the outback to Charleville, heading to the coast, or chasing a classic country Sunday session — you'll be looked after like family.</p>
-      <p class="mt-3 text-[15px] leading-relaxed text-stone-600 reveal">Expect ice-cold drinks, generous pub feeds, spotless air-conditioned rooms with queen comfort, and sunsets that set the whole western sky on fire.</p>
-
-      <div class="mt-6 grid sm:grid-cols-3 gap-4">
-        <div class="bg-white rounded-2xl border border-line p-5 shadow-card reveal">
-          <div class="w-10 h-10 rounded-xl bg-terra/10 text-terra grid place-items-center text-[18px] mb-3"><i class="fa-solid fa-beer-mug-empty"></i></div>
-          <div class="font-bold text-[14.5px]">Classic Country Pub</div><div class="text-[13px] text-stone-500 mt-1 leading-relaxed">Front bar, dining room, TAB & drive-through bottleshop.</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-line p-5 shadow-card reveal">
-          <div class="w-10 h-10 rounded-xl bg-eucaly/10 text-eucaly grid place-items-center text-[18px] mb-3"><i class="fa-solid fa-bed"></i></div>
-          <div class="font-bold text-[14.5px]">Restful Motel Rooms</div><div class="text-[13px] text-stone-500 mt-1 leading-relaxed">Queen, twin & family rooms with ensuites & parking at door.</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-line p-5 shadow-card reveal">
-          <div class="w-10 h-10 rounded-xl bg-gold/15 text-golddark grid place-items-center text-[18px] mb-3"><i class="fa-solid fa-route"></i></div>
-          <div class="font-bold text-[14.5px]">Perfect Halfway</div><div class="text-[13px] text-stone-500 mt-1 leading-relaxed">Mitchell ↔ Charleville • Roma ↔ Augathella. Easy highway access.</div>
-        </div>
-      </div>
-
-      <!-- Highlights carousel -->
-      <div class="mt-6 bg-outback text-cream rounded-3xl p-6 md:p-8 relative overflow-hidden reveal">
-        <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="">
-        <div class="relative flex flex-wrap items-end justify-between gap-4 mb-5">
-          <div><div class="font-hand text-gold text-[20px]">guest favourites</div><div class="font-serif text-[24px] md:text-[28px] font-bold">Why travellers love Morven</div></div>
-          <div class="flex gap-2"><button onclick="scrollHighlights(-1)" class="w-10 h-10 rounded-full border border-white/20 grid place-items-center hover:bg-white hover:text-outback transition"><i class="fa-solid fa-arrow-left"></i></button><button onclick="scrollHighlights(1)" class="w-10 h-10 rounded-full bg-gold text-outback grid place-items-center hover:bg-white transition"><i class="fa-solid fa-arrow-right"></i></button></div>
-        </div>
-        <div id="highlightRow" class="relative flex gap-4 overflow-x-auto custom-scroll snap-x snap-mandatory pb-2 -mx-1 px-1">
-          <div class="snap-start min-w-[240px] md:min-w-[280px] bg-white/10 border border-white/15 backdrop-blur rounded-2xl p-5"><div class="text-gold text-[22px] mb-2"><i class="fa-solid fa-drumstick-bite"></i></div><div class="font-bold">300g Rump + Cold Pot</div><div class="text-[13px] text-white/70 mt-1">“Best pub feed west of Roma. Huge servings.” — Karen M.</div><div class="mt-3 text-[12px] text-gold font-bold">★★★★★ 4.9 food rating</div></div>
-          <div class="snap-start min-w-[240px] md:min-w-[280px] bg-white/10 border border-white/15 backdrop-blur rounded-2xl p-5"><div class="text-gold text-[22px] mb-2"><i class="fa-solid fa-moon"></i></div><div class="font-bold">Quiet, Dark, Restful</div><div class="text-[13px] text-white/70 mt-1">Blockout blinds & comfy queens. Sleep through road-train rumble.</div><div class="mt-3 text-[12px] text-gold font-bold">★★★★★ 4.8 sleep score</div></div>
-          <div class="snap-start min-w-[240px] md:min-w-[280px] bg-white/10 border border-white/15 backdrop-blur rounded-2xl p-5"><div class="text-gold text-[22px] mb-2"><i class="fa-solid fa-handshake-angle"></i></div><div class="font-bold">True Country Welcome</div><div class="text-[13px] text-white/70 mt-1">Hosts go above & beyond — late check-ins sorted with a smile.</div><div class="mt-3 text-[12px] text-gold font-bold">★★★★★ 4.9 hospitality</div></div>
-          <div class="snap-start min-w-[240px] md:min-w-[280px] bg-white/10 border border-white/15 backdrop-blur rounded-2xl p-5"><div class="text-gold text-[22px] mb-2"><i class="fa-solid fa-car-side"></i></div><div class="font-bold">Truck & Van Friendly</div><div class="text-[13px] text-white/70 mt-1">Big rig parking, trailers & caravans welcome right opposite.</div><div class="mt-3 text-[12px] text-gold font-bold">Easy in / easy out</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Side card: rating + contact -->
-    <aside class="space-y-4">
-      <div class="bg-white rounded-3xl border border-line shadow-card p-6 reveal">
-        <div class="flex items-center justify-between">
-          <div class="font-bold text-[15px]">Guest rating</div>
-          <a href="#reviews" class="text-[12.5px] font-semibold text-terra hover:underline">Read all 150 reviews →</a>
-        </div>
-        <div class="mt-4 flex items-center gap-4">
-          <div class="w-[72px] h-[72px] rounded-2xl bg-outback text-white grid place-items-center text-center leading-none"><div><div class="font-serif font-bold text-[26px]">4.7</div><div class="text-[10px] opacity-70">/ 5</div></div></div>
-          <div>
-            <div class="flex gap-0.5 text-[14px]"><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star-half-stroke star-gold"></i></div>
-            <div class="text-[13px] font-semibold mt-1">Exceptional • 150 verified reviews</div>
-            <div class="text-[12px] text-stone-500">98% would stay again</div>
-          </div>
-        </div>
-        <div class="mt-4 space-y-2 text-[13px]">
-          <div class="flex items-center gap-3"><span class="w-20 font-medium">Cleanliness</span><div class="flex-1 h-2 bg-cream rounded-full overflow-hidden border border-line"><div class="h-full w-[96%] bg-gradient-to-r from-gold to-terra rounded-full"></div></div><span class="font-bold w-8 text-right">4.8</span></div>
-          <div class="flex items-center gap-3"><span class="w-20 font-medium">Comfort</span><div class="flex-1 h-2 bg-cream rounded-full overflow-hidden border border-line"><div class="h-full w-[92%] bg-gradient-to-r from-gold to-terra rounded-full"></div></div><span class="font-bold w-8 text-right">4.6</span></div>
-          <div class="flex items-center gap-3"><span class="w-20 font-medium">Value</span><div class="flex-1 h-2 bg-cream rounded-full overflow-hidden border border-line"><div class="h-full w-[94%] bg-gradient-to-r from-gold to-terra rounded-full"></div></div><span class="font-bold w-8 text-right">4.7</span></div>
-          <div class="flex items-center gap-3"><span class="w-20 font-medium">Location</span><div class="flex-1 h-2 bg-cream rounded-full overflow-hidden border border-line"><div class="h-full w-[90%] bg-gradient-to-r from-gold to-terra rounded-full"></div></div><span class="font-bold w-8 text-right">4.5</span></div>
-        </div>
-        <div class="dashed-line my-5"></div>
-        <div class="text-[13px] space-y-3">
-          <div class="flex gap-3"><i class="fa-solid fa-location-dot text-terra mt-0.5"></i><span><strong>78 Warrego Hwy,</strong> Morven QLD 4468, Australia <br><button onclick="openDirections()" class="text-terra font-semibold hover:underline">Get Directions</button> • <button onclick="copyAddress()" class="font-semibold hover:underline">Copy address</button></span></div>
-          <div class="flex gap-3"><i class="fa-solid fa-phone text-terra mt-0.5"></i><span>(07) 4654 8316 <br><span class="text-stone-500">Daily 7am – 9pm AEST</span></span></div>
-          <div class="flex gap-3"><i class="fa-solid fa-envelope text-terra mt-0.5"></i><span>stay@morvenhotelmotel.com.au</span></div>
-        </div>
-        <div class="grid grid-cols-3 gap-2 mt-5">
-          <button onclick="openCall()" class="bg-outback text-white rounded-xl py-2.5 text-[12.5px] font-bold hover:bg-terra transition"><i class="fa-solid fa-phone mr-1"></i>Call</button>
-          <button onclick="openDirections()" class="bg-cream border border-line rounded-xl py-2.5 text-[12.5px] font-bold hover:bg-sand transition"><i class="fa-solid fa-location-arrow mr-1 text-terra"></i>Directions</button>
-          <button onclick="openShare()" class="bg-cream border border-line rounded-xl py-2.5 text-[12.5px] font-bold hover:bg-sand transition"><i class="fa-solid fa-share-nodes mr-1 text-terra"></i>Share</button>
-        </div>
-      </div>
-      <div class="rounded-3xl overflow-hidden shadow-card relative reveal">
-        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop" class="h-[210px] w-full object-cover" alt="">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        <div class="absolute bottom-0 p-5 text-white"><div class="font-hand text-gold text-[18px]">warrego highway</div><div class="font-serif font-bold text-[18px] leading-tight">Halfway to everywhere worth going.</div><div class="text-[12.5px] opacity-80 mt-1">Charleville 90km • Mitchell 110km • Roma 180km</div></div>
-      </div>
-      <div class="bg-gradient-to-br from-gold to-[#E8C88A] rounded-3xl p-5 flex items-center gap-4 shadow-gold reveal">
-        <div class="w-12 h-12 rounded-2xl bg-outback text-gold grid place-items-center text-[20px] shrink-0"><i class="fa-solid fa-percent"></i></div>
-        <div><div class="font-bold text-[14px] text-outback">Call direct & save 10%</div><div class="text-[12.5px] text-outback/70">Mention code <span class="font-mono font-bold bg-outback text-gold px-1.5 py-0.5 rounded">WARREGO10</span> when you contact the property.</div></div>
-      </div>
-    </aside>
-  </div>
-</section>
-
-<!-- PRICES / BOOKING -->
-<section id="prices" class="pt-14">
-  <div class="flex items-center gap-3 mb-3 reveal"><span class="text-[12px] font-bold tracking-[.2em] uppercase text-terra">02 — Prices & Booking</span><div class="h-px flex-1 bg-line"></div><span class="hidden sm:inline text-[12px] font-semibold bg-emerald-100 text-emerald-800 rounded-full px-3 py-1"><i class="fa-solid fa-circle-check mr-1"></i>Free cancellation*</span></div>
-  <div class="flex flex-wrap items-end justify-between gap-4 mb-6 reveal">
-    <h2 class="font-serif text-[32px] md:text-[44px] font-bold leading-tight">Check rates for <span class="italic text-terra">your dates.</span></h2>
-    <p class="text-[13.5px] text-stone-500 max-w-md"><i class="fa-solid fa-circle-info text-terra mr-1"></i> Live rates shown below. For group, long-stay or special requests, please <button onclick="openCall()" class="font-bold text-outback underline decoration-terra underline-offset-2">contact the property</button> for rates and availability.</p>
-  </div>
-
-  <!-- Booking engine -->
-  <div class="bg-outback text-cream rounded-[26px] p-5 md:p-7 shadow-soft relative overflow-hidden reveal">
-    <div class="absolute -top-20 -right-20 w-[380px] h-[380px] rounded-full bg-terra/20 blur-[80px]"></div>
-    <div class="absolute -bottom-24 -left-20 w-[380px] h-[380px] rounded-full bg-gold/20 blur-[80px]"></div>
-    <div class="relative grid lg:grid-cols-[1fr_auto] gap-5 items-end">
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <label class="bg-white/10 border border-white/15 rounded-2xl p-3.5 block hover:border-gold transition cursor-pointer">
-          <div class="text-[11px] uppercase tracking-[.18em] font-bold text-gold mb-1"><i class="fa-regular fa-calendar-check mr-1"></i>Check-in</div>
-          <input id="checkin" type="date" value="2026-09-12" class="w-full bg-transparent font-bold text-[15px] outline-none [color-scheme:dark]">
-          <div id="checkinLabel" class="text-[12px] text-white/60">Sat, 12 Sept 2026 • from 2pm</div>
-        </label>
-        <label class="bg-white/10 border border-white/15 rounded-2xl p-3.5 block hover:border-gold transition cursor-pointer">
-          <div class="text-[11px] uppercase tracking-[.18em] font-bold text-gold mb-1"><i class="fa-regular fa-calendar-xmark mr-1"></i>Check-out</div>
-          <input id="checkout" type="date" value="2026-09-13" class="w-full bg-transparent font-bold text-[15px] outline-none [color-scheme:dark]">
-          <div id="checkoutLabel" class="text-[12px] text-white/60">Sun, 13 Sept 2026 • till 10am</div>
-        </label>
-        <label class="bg-white/10 border border-white/15 rounded-2xl p-3.5 block">
-          <div class="text-[11px] uppercase tracking-[.18em] font-bold text-gold mb-1"><i class="fa-solid fa-user-group mr-1"></i>Guests</div>
-          <select id="guests" class="w-full bg-transparent font-bold text-[15px] outline-none [&>option]:text-black">
-            <option value="1">1 adult</option>
-            <option value="2" selected>2 adults</option>
-            <option value="3">3 adults</option>
-            <option value="4">4 adults</option>
-            <option value="5">2 adults + 2 kids</option>
-            <option value="6">2 adults + 3 kids</option>
-          </select>
-          <div class="text-[12px] text-white/60">Max varies by room</div>
-        </label>
-        <label class="bg-white/10 border border-white/15 rounded-2xl p-3.5 block">
-          <div class="text-[11px] uppercase tracking-[.18em] font-bold text-gold mb-1"><i class="fa-solid fa-bed mr-1"></i>Rooms</div>
-          <select id="roomCount" class="w-full bg-transparent font-bold text-[15px] outline-none [&>option]:text-black">
-            <option value="1" selected>1 room</option><option value="2">2 rooms</option><option value="3">3 rooms</option>
-          </select>
-          <div id="nightLabel" class="text-[12px] text-white/60">1 night stay</div>
-        </label>
-      </div>
-      <div class="flex flex-col sm:flex-row lg:flex-col gap-3 lg:w-[260px]">
-        <button onclick="checkAvailability()" class="btn-sheen bg-terra hover:bg-terradark transition rounded-2xl px-8 py-4 font-bold text-[15px] shadow-gold flex items-center justify-center gap-2"><i class="fa-solid fa-magnifying-glass"></i> Check availability</button>
-        <div class="text-center text-[12px] text-white/60">No payment today • Pay at property</div>
-      </div>
-    </div>
-    <div id="availBanner" class="relative mt-4 hidden bg-emerald-500/15 border border-emerald-400/30 rounded-2xl px-4 py-3 text-[13.5px] flex items-center gap-3">
-      <span class="w-9 h-9 rounded-full bg-emerald-500 text-white grid place-items-center shrink-0"><i class="fa-solid fa-check"></i></span>
-      <span><strong>Good news!</strong> <span id="availText">4 rooms available for Sat, 12 Sept → Sun, 13 Sept (1 night).</span> Prices starting at <strong>₹11,564</strong> incl. taxes. Hurry — Saturday nights sell fast in Morven.</span>
-    </div>
-  </div>
-
-  <!-- Rooms -->
-  <div class="mt-6 grid lg:grid-cols-[1fr_340px] gap-6">
-    <div id="roomList" class="space-y-4"></div>
-
-    <!-- Summary -->
-    <aside class="lg:sticky lg:top-[150px] h-fit">
-      <div class="bg-white rounded-3xl border-2 border-outback shadow-card overflow-hidden reveal">
-        <div class="bg-outback text-cream p-5">
-          <div class="text-[12px] uppercase tracking-[.18em] text-gold font-bold">Your stay</div>
-          <div id="summaryDates" class="font-serif font-bold text-[18px] mt-1">Sat, 12 Sept → Sun, 13 Sept</div>
-          <div id="summaryMeta" class="text-[12.5px] text-white/60">1 night • 2 adults • 1 room</div>
-        </div>
-        <div class="p-5">
-          <div id="summaryRooms" class="space-y-3 text-[13.5px]">
-            <div class="text-center text-stone-500 py-4 border border-dashed border-line rounded-2xl">Select a room to see your total here 👆</div>
-          </div>
-          <div class="dashed-line my-4"></div>
-          <div class="flex justify-between text-[13.5px]"><span class="text-stone-500">Room total</span><span id="sumSubtotal" class="font-semibold">—</span></div>
-          <div class="flex justify-between text-[13.5px] mt-1"><span class="text-stone-500">Taxes & fees (10% GST)</span><span id="sumTax" class="font-semibold">—</span></div>
-          <div class="flex justify-between items-end mt-3"><span class="font-bold">Total <span class="text-[11px] font-normal text-stone-500">(INR)</span></span><span id="sumTotal" class="font-serif font-bold text-[26px]">—</span></div>
-          <div class="text-[11.5px] text-stone-500 mt-1">Starting at <strong class="text-outback">₹11,564</strong> for 1 night. Prices in INR for online display; charged in AUD at property.</div>
-          <button id="reserveBtn" onclick="openCheckout()" disabled class="mt-4 w-full btn-sheen bg-stone-200 text-stone-400 rounded-2xl py-3.5 font-bold text-[15px] transition disabled:cursor-not-allowed">Select a room to continue</button>
-          <button onclick="openCall()" class="mt-2 w-full border border-line rounded-2xl py-3 font-bold text-[13.5px] hover:bg-sand transition"><i class="fa-solid fa-phone text-terra mr-2"></i>Or call (07) 4654 8316 to book</button>
-          <p class="mt-3 text-[11.5px] leading-relaxed text-stone-500 bg-sand rounded-xl p-3"><i class="fa-solid fa-circle-info text-terra mr-1"></i> Rates vary by season & events. Please contact the property directly for the most accurate rates and availability, especially for 3+ nights or groups.</p>
-        </div>
-      </div>
-      <div class="mt-4 grid grid-cols-3 gap-2 text-center text-[11.5px] font-semibold">
-        <div class="bg-white border border-line rounded-2xl py-3 px-2"><i class="fa-solid fa-ban-smoking text-terra block text-[16px] mb-1"></i>Smoke-free</div>
-        <div class="bg-white border border-line rounded-2xl py-3 px-2"><i class="fa-solid fa-paw text-terra block text-[16px] mb-1"></i>Pet friendly*</div>
-        <div class="bg-white border border-line rounded-2xl py-3 px-2"><i class="fa-solid fa-wheelchair text-terra block text-[16px] mb-1"></i>Accessible</div>
-      </div>
-    </aside>
-  </div>
-</section>
-
-<!-- REVIEWS -->
-<section id="reviews" class="pt-16">
-  <div class="flex items-center gap-3 mb-3 reveal"><span class="text-[12px] font-bold tracking-[.2em] uppercase text-terra">03 — Reviews</span><div class="h-px flex-1 bg-line"></div></div>
-  <div class="flex flex-wrap items-end justify-between gap-4 mb-6 reveal">
-    <h2 class="font-serif text-[32px] md:text-[44px] font-bold">Loved by <span class="italic text-terra">150 travellers.</span></h2>
-    <button onclick="openReviewModal()" class="btn-sheen bg-outback text-white rounded-full px-6 py-3 text-[13.5px] font-bold hover:bg-terra transition"><i class="fa-solid fa-pen mr-2 text-gold"></i>Write a review</button>
-  </div>
-
-  <div class="grid lg:grid-cols-[340px_1fr] gap-6">
-    <!-- Score panel -->
-    <div class="bg-white rounded-3xl border border-line shadow-card p-6 h-fit reveal">
-      <div class="flex items-center gap-4">
-        <div class="text-[56px] font-serif font-bold leading-none">4.7</div>
-        <div><div class="flex text-[15px] gap-1"><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star star-gold"></i><i class="fa-solid fa-star-half-stroke star-gold"></i></div><div class="text-[13px] text-stone-500 mt-1">Based on 150 reviews</div><div class="text-[12px] font-bold text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-0.5 inline-block mt-1.5">Excellent</div></div>
-      </div>
-      <div class="mt-5 space-y-2" id="ratingBars"></div>
-      <div class="dashed-line my-5"></div>
-      <div class="text-[13px] font-bold mb-2">Filter reviews</div>
-      <div class="flex flex-wrap gap-2" id="filterChips">
-        <button data-filter="all" class="filter-chip bg-outback text-white rounded-full px-4 py-1.5 text-[12.5px] font-bold">All 150</button>
-        <button data-filter="5" class="filter-chip bg-cream border border-line rounded-full px-4 py-1.5 text-[12.5px] font-bold hover:border-terra">5 ★</button>
-        <button data-filter="4" class="filter-chip bg-cream border border-line rounded-full px-4 py-1.5 text-[12.5px] font-bold hover:border-terra">4 ★</button>
-        <button data-filter="3" class="filter-chip bg-cream border border-line rounded-full px-4 py-1.5 text-[12.5px] font-bold hover:border-terra">3 ★ & below</button>
-        <button data-filter="family" class="filter-chip bg-cream border border-line rounded-full px-4 py-1.5 text-[12.5px] font-bold hover:border-terra">Family</button>
-        <button data-filter="couple" class="filter-chip bg-cream border border-line rounded-full px-4 py-1.5 text-[12.5px] font-bold hover:border-terra">Couples</button>
-      </div>
-      <div class="mt-4">
-        <label class="text-[13px] font-bold">Sort by</label>
-        <select id="sortReviews" class="mt-1 w-full bg-cream border border-line rounded-xl px-3 py-2.5 text-[13.5px] font-medium outline-none focus:border-terra">
-          <option value="helpful">Most helpful</option><option value="recent">Most recent</option><option value="highest">Highest rated</option><option value="lowest">Lowest rated</option>
-        </select>
-      </div>
-      <div class="mt-5 bg-sand rounded-2xl p-4 text-[12.5px] leading-relaxed"><strong>Review spotlight:</strong> “Cleanest motel room we've had in 3 weeks on the road. Dinner in the pub was outstanding.” — <em>TripAdvisor, Aug 2026</em></div>
-    </div>
-    <!-- Review list -->
-    <div>
-      <div class="grid sm:grid-cols-3 gap-3 mb-5 reveal">
-        <div class="bg-outback text-white rounded-2xl p-4 flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-gold/20 text-gold grid place-items-center"><i class="fa-solid fa-broom"></i></span><div><div class="font-bold text-[14px]">Spotless rooms</div><div class="text-[12px] opacity-70">Mentioned in 89 reviews</div></div></div>
-        <div class="bg-white border border-line rounded-2xl p-4 flex items-center gap-3 shadow-card"><span class="w-10 h-10 rounded-xl bg-terra/10 text-terra grid place-items-center"><i class="fa-solid fa-utensils"></i></span><div><div class="font-bold text-[14px]">Great pub meals</div><div class="text-[12px] text-stone-500">Mentioned in 102 reviews</div></div></div>
-        <div class="bg-white border border-line rounded-2xl p-4 flex items-center gap-3 shadow-card"><span class="w-10 h-10 rounded-xl bg-eucaly/10 text-eucaly grid place-items-center"><i class="fa-solid fa-heart"></i></span><div><div class="font-bold text-[14px]">Friendly hosts</div><div class="text-[12px] text-stone-500">Mentioned in 117 reviews</div></div></div>
-      </div>
-      <div id="reviewList" class="grid md:grid-cols-2 gap-4"></div>
-      <button id="loadMoreReviews" class="mt-5 w-full bg-white border border-line rounded-2xl py-3.5 font-bold text-[14px] hover:bg-outback hover:text-white transition reveal">Show more reviews ( <span id="remainingCount">144</span> remaining )</button>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" class="pt-16">
-  <div class="flex items-center gap-3 mb-3 reveal"><span class="text-[12px] font-bold tracking-[.2em] uppercase text-terra">04 — About</span><div class="h-px flex-1 bg-line"></div></div>
-  <div class="grid lg:grid-cols-2 gap-8 items-start">
-    <div class="reveal">
-      <h2 class="font-serif text-[32px] md:text-[44px] font-bold leading-tight">Where Cobb & Co. once <span class="italic text-terra">changed horses.</span></h2>
-      <div class="mt-4 text-[15px] text-stone-600 leading-relaxed space-y-3">
-        <p>Morven grew around the Cobb & Co. staging post, and our hotel has been pouring beers for thirsty travellers since the 1870s. Today the <strong class="text-outback">Morven Hotel Motel at 78 Warrego Hwy</strong> pairs that frontier history — pressed-tin ceilings, wide verandas, yarns in the front bar — with properly comfortable motel accommodation out back.</p>
-        <p>Run by locals who love the west, we're the kind of place where the publican remembers your name, the steak is cooked how you asked, and someone will always help you back your van in.</p>
-      </div>
-      <div class="mt-6 grid grid-cols-3 gap-3 text-center">
-        <div class="bg-white border border-line rounded-2xl py-5 shadow-card"><div class="font-serif font-bold text-[28px]">148<span class="text-terra">+</span></div><div class="text-[12px] font-semibold text-stone-500 uppercase tracking-wider">Years of history</div></div>
-        <div class="bg-white border border-line rounded-2xl py-5 shadow-card"><div class="font-serif font-bold text-[28px]">18</div><div class="text-[12px] font-semibold text-stone-500 uppercase tracking-wider">Rooms & suites</div></div>
-        <div class="bg-white border border-line rounded-2xl py-5 shadow-card"><div class="font-serif font-bold text-[28px]">4.7<span class="text-gold text-[18px]">★</span></div><div class="text-[12px] font-semibold text-stone-500 uppercase tracking-wider">150 reviews</div></div>
-      </div>
-      <div class="mt-6 bg-white border border-line rounded-3xl p-6 shadow-card">
-        <div class="font-bold text-[15px] mb-4 flex items-center gap-2"><i class="fa-solid fa-circle-info text-terra"></i> Good to know — policies</div>
-        <div class="grid sm:grid-cols-2 gap-3 text-[13.5px]">
-          <div class="flex gap-2.5"><i class="fa-solid fa-clock text-gold mt-0.5"></i><span><strong>Check-in 2pm – 8pm.</strong> Late arrival? Call (07) 4654 8316 — we’ll leave your key out.</span></div>
-          <div class="flex gap-2.5"><i class="fa-solid fa-right-from-bracket text-gold mt-0.5"></i><span><strong>Check-out 10am.</strong> Late checkout often available, just ask.</span></div>
-          <div class="flex gap-2.5"><i class="fa-solid fa-ban-smoking text-gold mt-0.5"></i><span><strong>No smoking indoors.</strong> Designated areas on veranda & beer garden.</span></div>
-          <div class="flex gap-2.5"><i class="fa-solid fa-paw text-gold mt-0.5"></i><span><strong>Dogs welcome*</strong> on request in selected rooms. Contact property first.</span></div>
-          <div class="flex gap-2.5"><i class="fa-solid fa-child text-gold mt-0.5"></i><span><strong>Kids stay free</strong> using existing bedding. Cots $20/night.</span></div>
-          <div class="flex gap-2.5"><i class="fa-solid fa-credit-card text-gold mt-0.5"></i><span><strong>Pay at property.</strong> Cash, card & bank transfer. No prepayment online.</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="space-y-4">
-      <div class="bg-white rounded-3xl border border-line shadow-card p-6 reveal">
-        <div class="font-bold text-[16px] mb-1">Amenities & facilities</div>
-        <div class="text-[13px] text-stone-500 mb-4">Everything you need for an easy highway stopover.</div>
-        <div id="amenGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-[13px] font-medium"></div>
-      </div>
-      <div class="grid grid-cols-2 gap-4 reveal">
-        <div class="rounded-3xl overflow-hidden shadow-card h-[220px] relative group"><img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt=""><div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur text-white text-[12px] font-bold rounded-full px-3 py-1.5">Front Bar • Est. 1876</div></div>
-        <div class="rounded-3xl overflow-hidden shadow-card h-[220px] relative group"><img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt=""><div class="absolute bottom-3 left-3 bg-black/60 backdrop-blur text-white text-[12px] font-bold rounded-full px-3 py-1.5">Dining Room • 7 days</div></div>
-      </div>
-      <div class="bg-gradient-to-r from-outback to-moss text-cream rounded-3xl p-6 flex items-center gap-5 reveal">
-        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" class="w-16 h-16 rounded-2xl object-cover border-2 border-gold" alt="">
-        <div><div class="font-hand text-gold text-[18px]">from your hosts</div><div class="text-[13.5px] italic leading-relaxed">“If you're passing through, make Morven your stop — not your drive-through. The sunset from the veranda is worth the stay alone.”</div><div class="text-[12px] font-bold mt-1 tracking-wide">— SHARON & MICK, PUBLICANS</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- LOCATION -->
-<section id="location" class="pt-16">
-  <div class="flex items-center gap-3 mb-3 reveal"><span class="text-[12px] font-bold tracking-[.2em] uppercase text-terra">05 — Location</span><div class="h-px flex-1 bg-line"></div></div>
-  <h2 class="font-serif text-[32px] md:text-[44px] font-bold reveal">Find us on the <span class="italic text-terra">Warrego.</span></h2>
-  <p class="text-stone-500 text-[14.5px] mt-2 reveal"><i class="fa-solid fa-location-dot text-terra mr-1"></i> 78 Warrego Hwy, Morven QLD 4468, Australia — you literally can't miss us. Look for the veranda with the flags.</p>
-
-  <div class="mt-6 grid lg:grid-cols-[1fr_360px] gap-6">
-    <div class="rounded-[26px] overflow-hidden shadow-soft border border-line bg-white reveal">
-      <div class="relative">
-        <iframe title="Morven Hotel Motel Map" src="https://www.google.com/maps?q=78%20Warrego%20Hwy%20Morven%20QLD%204468%20Australia&z=14&output=embed" class="w-full h-[380px] map-frame border-0" loading="lazy"></iframe>
-        <div class="absolute top-4 left-4 glass rounded-2xl px-4 py-3 shadow-card flex items-center gap-3 border border-white/60">
-          <div class="w-10 h-10 rounded-xl bg-terra text-white grid place-items-center"><i class="fa-solid fa-location-dot"></i></div>
-          <div class="leading-tight"><div class="font-bold text-[13.5px]">Morven Hotel Motel</div><div class="text-[12px] text-stone-500">78 Warrego Hwy, Morven QLD</div></div>
-        </div>
-        <div class="absolute bottom-4 left-4 right-4 sm:right-auto flex flex-wrap gap-2">
-          <button onclick="openDirections()" class="bg-outback text-white rounded-full px-5 py-2.5 text-[13px] font-bold hover:bg-terra transition shadow-card"><i class="fa-solid fa-diamond-turn-right mr-2 text-gold"></i>Get Directions</button>
-          <button onclick="copyAddress()" class="glass border border-white/60 rounded-full px-5 py-2.5 text-[13px] font-bold hover:bg-white transition"><i class="fa-solid fa-copy mr-2 text-terra"></i>Copy address</button>
-          <a href="https://www.google.com/maps/dir/?api=1&destination=78+Warrego+Hwy+Morven+QLD+4468+Australia" target="_blank" class="glass border border-white/60 rounded-full px-5 py-2.5 text-[13px] font-bold hover:bg-white transition"><i class="fa-solid fa-up-right-from-square mr-2 text-terra"></i>Open in Maps</a>
-        </div>
-      </div>
-      <div class="p-5 grid sm:grid-cols-3 gap-3 text-[13px]">
-        <div class="bg-sand rounded-2xl p-4"><div class="font-bold flex items-center gap-2"><i class="fa-solid fa-car text-terra"></i>Driving times</div><div class="mt-2 space-y-1 text-stone-600"><div class="flex justify-between"><span>Charleville</span><strong>1h</strong></div><div class="flex justify-between"><span>Roma</span><strong>2h</strong></div><div class="flex justify-between"><span>Toowoomba</span><strong>5h</strong></div><div class="flex justify-between"><span>Brisbane</span><strong>7h</strong></div></div></div>
-        <div class="bg-sand rounded-2xl p-4"><div class="font-bold flex items-center gap-2"><i class="fa-solid fa-star text-terra"></i>Nearby</div><div class="mt-2 space-y-1 text-stone-600"><div class="flex justify-between"><span>Morven Museum</span><strong>300m</strong></div><div class="flex justify-between"><span>Tregole NP</span><strong>10km</strong></div><div class="flex justify-between"><span>Angellala Creek</span><strong>30km</strong></div><div class="flex justify-between"><span>Charleville Cosmos</span><strong>91km</strong></div></div></div>
-        <div class="bg-outback text-cream rounded-2xl p-4"><div class="font-bold flex items-center gap-2"><i class="fa-solid fa-phone text-gold"></i>Need a lift?</div><div class="text-[12.5px] opacity-80 mt-2 leading-relaxed">Roadhouse pickup & late keys available. Call ahead and we’ll sort you out.</div><button onclick="openCall()" class="mt-3 w-full bg-terra rounded-xl py-2 font-bold text-[13px] hover:bg-terradark transition">Call (07) 4654 8316</button></div>
-      </div>
-    </div>
-    <div class="space-y-4">
-      <div class="bg-white rounded-3xl border border-line shadow-card p-6 reveal">
-        <div class="font-bold text-[15px]">Explore around Morven</div>
-        <div class="mt-4 space-y-3" id="nearbyList"></div>
-      </div>
-      <div class="rounded-3xl overflow-hidden relative h-[220px] shadow-card reveal">
-        <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent"></div>
-        <div class="absolute bottom-0 p-5 text-white"><div class="font-bold">Outback weather today</div><div class="flex items-center gap-3 mt-1"><span class="text-[30px]"><i class="fa-solid fa-sun text-gold"></i></span><span class="font-serif font-bold text-[26px]">27°</span><span class="text-[12.5px] opacity-80">Sunny • Clear night 12°<br>Perfect veranda weather</span></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PHOTOS -->
-<section id="photos" class="pt-16 pb-4">
-  <div class="flex items-center gap-3 mb-3 reveal"><span class="text-[12px] font-bold tracking-[.2em] uppercase text-terra">06 — Photos</span><div class="h-px flex-1 bg-line"></div><span class="text-[12px] font-semibold text-stone-500">48 photos • guests + staff</span></div>
-  <div class="flex flex-wrap items-end justify-between gap-4 mb-6 reveal">
-    <h2 class="font-serif text-[32px] md:text-[44px] font-bold">Postcards from <span class="italic text-terra">the west.</span></h2>
-    <div class="flex gap-2 flex-wrap" id="photoFilters">
-      <button data-cat="all" class="pf-btn bg-outback text-white rounded-full px-5 py-2 text-[13px] font-bold">All</button>
-      <button data-cat="rooms" class="pf-btn bg-white border border-line rounded-full px-5 py-2 text-[13px] font-bold hover:border-terra">Rooms</button>
-      <button data-cat="pub" class="pf-btn bg-white border border-line rounded-full px-5 py-2 text-[13px] font-bold hover:border-terra">Pub & Dining</button>
-      <button data-cat="exterior" class="pf-btn bg-white border border-line rounded-full px-5 py-2 text-[13px] font-bold hover:border-terra">Exterior</button>
-      <button data-cat="outback" class="pf-btn bg-white border border-line rounded-full px-5 py-2 text-[13px] font-bold hover:border-terra">Outback</button>
-    </div>
-  </div>
-  <div id="photoGrid" class="columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance] space-y-4 reveal"></div>
-</section>
-
-<!-- CTA STRIP -->
-<div class="mt-12 mb-12 reveal">
-  <div class="bg-gradient-to-r from-outback via-[#232B28] to-terradark rounded-[28px] p-8 md:p-12 text-cream relative overflow-hidden shadow-soft">
-    <img src="https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?q=80&w=1400&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-25" alt="">
-    <div class="relative grid md:grid-cols-[1fr_auto] gap-6 items-center">
-      <div>
-        <div class="font-hand text-gold text-[22px]">saturday 12 sept is filling fast</div>
-        <div class="font-serif text-[30px] md:text-[42px] font-bold leading-tight">Stay the night in Morven from <span class="text-gold">₹11,564.</span></div>
-        <div class="text-white/70 text-[14px] mt-2">Sat, 12 Sept → Sun, 13 Sept • 1 night • Free cancellation* • Pay at property. For tailored quotes, please contact the property for rates and availability.</div>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button onclick="openCall()" class="bg-white text-outback rounded-full px-5 py-2.5 text-[13px] font-bold hover:bg-gold transition"><i class="fa-solid fa-phone mr-2 text-terra"></i>Call (07) 4654 8316</button>
-          <button onclick="openDirections()" class="border border-white/25 rounded-full px-5 py-2.5 text-[13px] font-bold hover:bg-white hover:text-outback transition"><i class="fa-solid fa-diamond-turn-right mr-2"></i>Directions</button>
-          <button onclick="openShare()" class="border border-white/25 rounded-full px-5 py-2.5 text-[13px] font-bold hover:bg-white hover:text-outback transition"><i class="fa-solid fa-share-nodes mr-2"></i>Share</button>
-        </div>
-      </div>
-      <a href="#prices" class="btn-sheen bg-terra hover:bg-white hover:text-outback transition text-white rounded-2xl px-10 py-5 font-bold text-[16px] text-center shadow-gold">Check availability <div class="text-[12px] font-normal opacity-80">Sat 12 Sept → Sun 13 Sept</div></a>
-    </div>
-  </div>
-</div>
-
-</main>
-
-<!-- FOOTER -->
-<footer class="bg-outback text-cream pt-12 pb-6 border-t border-white/10">
-  <div class="max-w-7xl mx-auto px-4 md:px-6 grid md:grid-cols-4 gap-8">
-    <div>
-      <div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-gradient-to-br from-terra to-golddark grid place-items-center font-serif font-bold text-[22px]">M</div><div><div class="font-serif font-bold text-[17px]">Morven Hotel Motel</div><div class="text-[11px] tracking-[.2em] uppercase text-gold">Morven • Queensland</div></div></div>
-      <div class="mt-3 flex items-center gap-1.5 text-[13px]"><span class="bg-gold text-outback font-extrabold rounded-full px-2 py-0.5 text-[12px]">4.7</span><span class="flex text-[12px]"><i class="fa-solid fa-star text-gold"></i><i class="fa-solid fa-star text-gold"></i><i class="fa-solid fa-star text-gold"></i><i class="fa-solid fa-star text-gold"></i><i class="fa-solid fa-star-half-stroke text-gold"></i></span><span class="opacity-70">150 reviews</span></div>
-      <p class="mt-3 text-[13px] text-white/60 leading-relaxed">Historic outback pub & motel on the Warrego Highway. Good beds, big meals, bigger skies.</p>
-      <div class="mt-4 flex gap-2"><a href="#" class="w-9 h-9 rounded-full bg-white/10 grid place-items-center hover:bg-terra transition"><i class="fa-brands fa-facebook-f"></i></a><a href="#" class="w-9 h-9 rounded-full bg-white/10 grid place-items-center hover:bg-terra transition"><i class="fa-brands fa-instagram"></i></a><a href="#" class="w-9 h-9 rounded-full bg-white/10 grid place-items-center hover:bg-terra transition"><i class="fa-brands fa-tripadvisor"></i></a><a href="#" class="w-9 h-9 rounded-full bg-white/10 grid place-items-center hover:bg-terra transition"><i class="fa-brands fa-google"></i></a></div>
-    </div>
-    <div><div class="text-[12px] font-bold tracking-[.18em] uppercase text-gold mb-3">Contact</div><div class="text-[13.5px] space-y-2.5 text-white/80"><div><i class="fa-solid fa-location-dot text-terra mr-2"></i>78 Warrego Hwy,<br><span class="ml-6">Morven QLD 4468, Australia</span></div><div><i class="fa-solid fa-phone text-terra mr-2"></i><a href="tel:+61746548316" class="hover:text-gold">(07) 4654 8316</a></div><div><i class="fa-solid fa-envelope text-terra mr-2"></i>stay@morvenhotelmotel.com.au</div><div><i class="fa-solid fa-clock text-terra mr-2"></i>Reception 7am – 9pm daily</div></div></div>
-    <div><div class="text-[12px] font-bold tracking-[.18em] uppercase text-gold mb-3">Explore</div><div class="grid grid-cols-1 gap-2 text-[13.5px] text-white/80"><a href="#overview" class="hover:text-gold">Overview</a><a href="#prices" class="hover:text-gold">Prices & Booking — from ₹11,564</a><a href="#reviews" class="hover:text-gold">Reviews (150)</a><a href="#about" class="hover:text-gold">About & Policies</a><a href="#location" class="hover:text-gold">Location & Directions</a><a href="#photos" class="hover:text-gold">Photos</a></div></div>
-    <div><div class="text-[12px] font-bold tracking-[.18em] uppercase text-gold mb-3">Plan your stay</div><div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px]"><div class="font-bold">Sat, 12 Sept → Sun, 13 Sept</div><div class="text-white/60 text-[12.5px]">1 night • from ₹11,564 incl. taxes</div><a href="#prices" class="mt-3 block text-center bg-terra hover:bg-terradark transition rounded-xl py-2.5 font-bold">Check availability</a><button onclick="openCall()" class="mt-2 block w-full text-center border border-white/15 rounded-xl py-2.5 font-bold hover:bg-white hover:text-outback transition">Call to book direct</button></div><p class="mt-3 text-[11.5px] text-white/50 leading-relaxed">Tip: rates change with demand. Please contact the property for rates and availability for groups & long stays.</p></div>
-  </div>
-  <div class="max-w-7xl mx-auto px-4 md:px-6 mt-8 pt-5 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-3 text-[12px] text-white/50"><span>© 2026 Morven Hotel Motel • 78 Warrego Hwy, Morven QLD 4468 • ABN 12 345 678 901</span><span class="flex gap-4"><a href="#" class="hover:text-gold">Privacy</a><a href="#" class="hover:text-gold">Terms</a><a href="#" class="hover:text-gold">Accessibility</a></span></div>
-</footer>
-
-<!-- STICKY MOBILE BOOK BAR -->
-<div class="md:hidden fixed bottom-0 inset-x-0 z-40 glass border-t border-line px-4 py-3 flex items-center gap-3 shadow-soft">
-  <div class="flex-1 leading-tight"><div class="text-[11px] text-stone-500 font-semibold uppercase tracking-wider">Sat 12 → Sun 13 Sept • From</div><div class="font-serif font-bold text-[18px]">₹11,564</div></div>
-  <button onclick="openCall()" class="w-11 h-11 rounded-full border border-line bg-white grid place-items-center"><i class="fa-solid fa-phone text-terra"></i></button>
-  <a href="#prices" class="bg-terra text-white rounded-full px-6 py-3 font-bold text-[14px]">Book</a>
-</div>
-<div class="h-[76px] md:hidden"></div>
-
-<!-- MODALS -->
-<!-- CALL -->
-<div id="callModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('callModal')"></div>
-  <div class="relative bg-cream rounded-3xl max-w-md w-full p-7 shadow-soft">
-    <button onclick="closeModal('callModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white border border-line grid place-items-center hover:bg-outback hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
-    <div class="w-14 h-14 rounded-2xl bg-terra text-white grid place-items-center text-[22px] mb-4"><i class="fa-solid fa-phone-volume"></i></div>
-    <h3 class="font-serif font-bold text-[24px]">Call the property</h3>
-    <p class="text-[13.5px] text-stone-500 mt-1">Best for same-day bookings, late arrivals & special rates. Mention <strong>WARREGO10</strong> for 10% off direct.</p>
-    <a href="tel:+61746548316" class="mt-4 block bg-outback text-white rounded-2xl p-4 text-center hover:bg-terra transition"><div class="text-[12px] uppercase tracking-wider opacity-70 font-bold">Tap to call now</div><div class="font-serif font-bold text-[22px]">(07) 4654 8316</div><div class="text-[12px] opacity-70">Daily 7am – 9pm AEST • 78 Warrego Hwy, Morven</div></a>
-    <div class="grid grid-cols-2 gap-2 mt-3">
-      <button onclick="copyPhone()" class="border border-line bg-white rounded-xl py-2.5 text-[13px] font-bold hover:bg-sand"><i class="fa-solid fa-copy mr-1 text-terra"></i>Copy number</button>
-      <a href="sms:+61746548316" class="border border-line bg-white rounded-xl py-2.5 text-[13px] font-bold text-center hover:bg-sand"><i class="fa-solid fa-message mr-1 text-terra"></i>Text us</a>
-    </div>
-    <p class="mt-3 text-[12px] text-stone-500 bg-sand rounded-xl p-3">Prefer email? <strong>stay@morvenhotelmotel.com.au</strong> — we reply within a few hours. For groups, please contact the property for rates and availability.</p>
-  </div>
-</div>
-
-<!-- SHARE -->
-<div id="shareModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('shareModal')"></div>
-  <div class="relative bg-cream rounded-3xl max-w-md w-full p-7 shadow-soft">
-    <button onclick="closeModal('shareModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white border border-line grid place-items-center hover:bg-outback hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
-    <h3 class="font-serif font-bold text-[24px]">Share this stay</h3>
-    <p class="text-[13px] text-stone-500">Morven Hotel Motel • 4.7 ★ (150 reviews) • From ₹11,564 • 78 Warrego Hwy, Morven QLD</p>
-    <div class="mt-4 flex items-center gap-2 bg-white border border-line rounded-2xl p-2 pl-4"><span id="shareLink" class="flex-1 text-[12.5px] truncate text-stone-600">https://morvenhotelmotel.com.au/stay?checkin=2026-09-12&checkout=2026-09-13</span><button onclick="copyLink()" class="bg-outback text-white rounded-xl px-4 py-2 text-[12.5px] font-bold hover:bg-terra">Copy</button></div>
-    <div class="grid grid-cols-4 gap-2 mt-4 text-center text-[12px] font-bold">
-      <button onclick="shareTo('whatsapp')" class="bg-white border border-line rounded-2xl py-3 hover:bg-[#25D366] hover:text-white hover:border-transparent transition"><i class="fa-brands fa-whatsapp text-[20px] block mb-1"></i>WhatsApp</button>
-      <button onclick="shareTo('facebook')" class="bg-white border border-line rounded-2xl py-3 hover:bg-[#1877F2] hover:text-white hover:border-transparent transition"><i class="fa-brands fa-facebook text-[20px] block mb-1"></i>Facebook</button>
-      <button onclick="shareTo('email')" class="bg-white border border-line rounded-2xl py-3 hover:bg-terra hover:text-white hover:border-transparent transition"><i class="fa-solid fa-envelope text-[20px] block mb-1"></i>Email</button>
-      <button onclick="shareTo('native')" class="bg-white border border-line rounded-2xl py-3 hover:bg-outback hover:text-white hover:border-transparent transition"><i class="fa-solid fa-share-nodes text-[20px] block mb-1"></i>More</button>
-    </div>
-  </div>
-</div>
-
-<!-- CHECKOUT -->
-<div id="checkoutModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 overflow-y-auto">
-  <div class="absolute inset-0 bg-black/65 backdrop-blur-sm" onclick="closeModal('checkoutModal')"></div>
-  <div class="relative bg-cream rounded-3xl max-w-2xl w-full overflow-hidden shadow-soft my-8">
-    <div class="bg-outback text-cream p-6 flex items-start justify-between gap-4">
-      <div><div class="text-[11px] tracking-[.2em] uppercase text-gold font-bold">Almost done</div><div class="font-serif font-bold text-[24px]">Confirm your booking</div><div id="checkoutSummaryLine" class="text-[13px] text-white/60">Sat, 12 Sept → Sun, 13 Sept • 1 night</div></div>
-      <button onclick="closeModal('checkoutModal')" class="w-9 h-9 rounded-full border border-white/20 grid place-items-center hover:bg-white hover:text-outback transition shrink-0"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="p-6 grid md:grid-cols-[1fr_260px] gap-6">
-      <div class="space-y-3">
-        <div class="grid grid-cols-2 gap-3">
-          <label class="block"><span class="text-[12px] font-bold">First name *</span><input id="fFirst" class="mt-1 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px] outline-none focus:border-terra" placeholder="Jack"></label>
-          <label class="block"><span class="text-[12px] font-bold">Last name *</span><input id="fLast" class="mt-1 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px] outline-none focus:border-terra" placeholder="Smith"></label>
-        </div>
-        <label class="block"><span class="text-[12px] font-bold">Email *</span><input id="fEmail" type="email" class="mt-1 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px] outline-none focus:border-terra" placeholder="you@example.com"></label>
-        <label class="block"><span class="text-[12px] font-bold">Phone *</span><input id="fPhone" class="mt-1 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px] outline-none focus:border-terra" placeholder="04xx xxx xxx"></label>
-        <label class="block"><span class="text-[12px] font-bold">Arrival time & requests</span><textarea id="fNotes" rows="3" class="mt-1 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px] outline-none focus:border-terra" placeholder="Late arrival ~9pm, quiet room, travelling with dog..."></textarea></label>
-        <label class="flex items-start gap-2 text-[12.5px]"><input type="checkbox" id="fAgree" class="mt-1 accent-[#C45A3C]"> <span>I understand pay-at-property applies and that for special rates I should <strong>contact the property for rates and availability</strong>.</span></label>
-      </div>
-      <div class="bg-white border border-line rounded-2xl p-4 h-fit">
-        <div class="font-bold text-[14px]">Booking summary</div>
-        <div id="checkoutRooms" class="mt-2 text-[13px] space-y-2"></div>
-        <div class="dashed-line my-3"></div>
-        <div id="checkoutTotals" class="text-[13px] space-y-1"></div>
-        <button onclick="confirmBooking()" class="mt-4 w-full btn-sheen bg-terra hover:bg-terradark text-white rounded-xl py-3 font-bold transition">Confirm request →</button>
-        <div class="text-[11px] text-stone-500 mt-2 text-center">No charge today • Free cancellation 48h before</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- REVIEW MODAL -->
-<div id="reviewModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('reviewModal')"></div>
-  <div class="relative bg-cream rounded-3xl max-w-md w-full p-7 shadow-soft">
-    <button onclick="closeModal('reviewModal')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white border border-line grid place-items-center hover:bg-outback hover:text-white transition"><i class="fa-solid fa-xmark"></i></button>
-    <h3 class="font-serif font-bold text-[24px]">Write a review</h3>
-    <p class="text-[13px] text-stone-500">Stayed Sat 12 Sept? Tell the next traveller how it was.</p>
-    <div class="mt-3 flex gap-1 text-[26px]" id="starInput"><button data-s="1"><i class="fa-solid fa-star text-line"></i></button><button data-s="2"><i class="fa-solid fa-star text-line"></i></button><button data-s="3"><i class="fa-solid fa-star text-line"></i></button><button data-s="4"><i class="fa-solid fa-star text-line"></i></button><button data-s="5"><i class="fa-solid fa-star text-line"></i></button></div>
-    <input id="rName" class="mt-3 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px] outline-none focus:border-terra" placeholder="Your name">
-    <select id="rType" class="mt-2 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px]"><option value="couple">Couple</option><option value="family">Family</option><option value="solo">Solo</option><option value="business">Business</option></select>
-    <textarea id="rText" rows="4" class="mt-2 w-full bg-white border border-line rounded-xl px-3 py-2.5 text-[14px] outline-none focus:border-terra" placeholder="Clean room, great feed, friendly hosts..."></textarea>
-    <button onclick="submitReview()" class="mt-3 w-full bg-outback text-white rounded-xl py-3 font-bold hover:bg-terra transition">Post review</button>
-  </div>
-</div>
-
-<!-- LIGHTBOX -->
-<div id="lightbox" class="fixed inset-0 z-[90] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/90" onclick="closeLightbox()"></div>
-  <button onclick="closeLightbox()" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white grid place-items-center hover:bg-white hover:text-black transition z-10"><i class="fa-solid fa-xmark text-[18px]"></i></button>
-  <button onclick="stepLightbox(-1)" class="absolute left-3 md:left-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white grid place-items-center hover:bg-white hover:text-black transition z-10"><i class="fa-solid fa-chevron-left"></i></button>
-  <button onclick="stepLightbox(1)" class="absolute right-3 md:right-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 border border-white/20 text-white grid place-items-center hover:bg-white hover:text-black transition z-10"><i class="fa-solid fa-chevron-right"></i></button>
-  <div class="relative max-w-4xl w-full">
-    <img id="lightboxImg" src="" class="w-full max-h-[75vh] object-contain rounded-2xl shadow-soft" alt="">
-    <div class="mt-3 flex items-center justify-between text-white"><div id="lightboxCap" class="text-[13.5px] font-semibold"></div><div id="lightboxCount" class="text-[12px] opacity-70"></div></div>
-  </div>
-</div>
-
-<!-- CONFIRMATION -->
-<div id="confirmModal" class="fixed inset-0 z-[85] hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
-  <div class="relative bg-cream rounded-3xl max-w-md w-full p-8 text-center shadow-soft">
-    <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500 text-white grid place-items-center text-[26px]"><i class="fa-solid fa-check"></i></div>
-    <h3 class="font-serif font-bold text-[26px] mt-4">Request received!</h3>
-    <p class="text-[13.5px] text-stone-500 mt-2">Thanks <span id="confName" class="font-bold text-outback">mate</span> — your stay request for <strong>Sat, 12 Sept → Sun, 13 Sept</strong> is with our team. We'll confirm by SMS & email shortly.</p>
-    <div class="mt-4 bg-white border border-dashed border-gold rounded-2xl p-4 ticket-notch"><div class="text-[11px] uppercase tracking-[.2em] font-bold text-stone-500">Booking reference</div><div id="confRef" class="font-mono font-bold text-[20px] tracking-widest">MH-000000</div><div id="confTotal" class="text-[13px] font-bold text-terra"></div></div>
-    <p class="mt-3 text-[12px] text-stone-500">Need changes? Call <a href="tel:+61746548316" class="font-bold text-outback">(07) 4654 8316</a> — and remember to contact the property for rates and availability on extras.</p>
-    <button onclick="closeModal('confirmModal')" class="mt-4 w-full bg-outback text-white rounded-xl py-3 font-bold hover:bg-terra transition">Done</button>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast" class="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[95] hidden"><div class="bg-outback text-white rounded-full pl-4 pr-6 py-3 shadow-soft flex items-center gap-3 text-[13.5px] font-semibold border border-white/15"><span id="toastIcon" class="w-8 h-8 rounded-full bg-emerald-500 grid place-items-center shrink-0"><i class="fa-solid fa-check"></i></span><span id="toastMsg">Done</span></div></div>
-
-<script>
-/* ============ DATA ============ */
-const ROOMS = [
-  {id:'queen', name:'Budget Queen Room — Motel', desc:'Comfy queen bed, ensuite, air-con, TV, tea & coffee. Parking right at your door. Perfect highway stopover.', img:'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=800&auto=format&fit=crop', tags:['Sleeps 2','1 queen','Ensuite','Air-con'], price:11564, was:12849, left:3, badge:'Most popular', rating:'4.8 • 62 stays'},
-  {id:'twin', name:'Twin Share Room', desc:'Two comfy singles, ensuite, work desk & blackout blinds. Ideal for mates, crew or family with kids.', img:'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=800&auto=format&fit=crop', tags:['Sleeps 3','2 singles + rollaway','Ensuite','Fridge'], price:12990, was:14400, left:2, badge:'Great for crews', rating:'4.6 • 41 stays'},
-  {id:'family', name:'Family Room — 1 Queen + 2 Singles', desc:'Spacious family set-up with queen + 2 singles, microwave & toaster. Cots available. Kids stay free on existing bedding.', img:'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=800&auto=format&fit=crop', tags:['Sleeps 5','Queen + 2 singles','Microwave','Parking'], price:16850, was:18900, left:2, badge:'Family pick', rating:'4.9 • 35 stays'},
-  {id:'deluxe', name:'Deluxe King Spa Suite', desc:'King bed, spa bath, private veranda seating, premium linen & outback sunset views. Our best room in the house.', img:'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop', tags:['Sleeps 2','King + spa','Veranda','Premium'], price:21400, was:23900, left:1, badge:'Only 1 left', rating:'5.0 • 12 stays'},
-];
-let selectedRoom = null;
-
-const REVIEWS = [
-  {name:'Karen M.', loc:'Brisbane, QLD', date:'Aug 2026', rating:5, type:'couple', title:'Best pub feed west of Roma!', text:'Spotless queen room, super comfy bed and the quietest sleep we\'ve had in weeks. Dinner was huge — rump cooked perfectly and the staff treated us like locals. Breakfast burger in the morning was elite.', helpful:42, avatar:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=100&auto=format&fit=crop'},
-  {name:'Dave & Shaz T.', loc:'Toowoomba, QLD', date:'Aug 2026', rating:5, type:'couple', title:'Halfway heaven to Charleville', text:'Pulled in late after a long tow and they\'d left the light on and key ready. Easy parking for our van + car. Cold beer, hot shower, warm bed. What more do you want? Will stop every time.', helpful:35, avatar:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&auto=format&fit=crop'},
-  {name:'Priya S.', loc:'Sydney, NSW', date:'July 2026', rating:5, type:'family', title:'Kids loved it, we slept great', text:'Family room was spacious and clean, kids free on existing beds was a bonus. Playground across the road and the sunset was unreal. Hosts even helped with a flat tyre tip. 4.7 rating is deserved.', helpful:28, avatar:'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&auto=format&fit=crop'},
-  {name:'Mick R.', loc:'Truck Driver, Warrego Run', date:'July 2026', rating:5, type:'solo', title:'Truck friendly, no fuss', text:'Plenty of room for the rig, easy in-out off the highway. Room was dark, cold air-con, hot shower with good pressure. Feed was big and fast. My regular stop now.', helpful:31, avatar:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop'},
-  {name:'Jenny L.', loc:'Melbourne, VIC', date:'June 2026', rating:4, type:'couple', title:'Charming & comfortable', text:'Lovely old hotel with real character. Room was clean and comfy though a little dated in the bathroom — but that\'s part of outback charm. Bar atmosphere was fantastic, great yarns with locals.', helpful:19, avatar:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=100&auto=format&fit=crop'},
-  {name:'Tom H.', loc:'Roma, QLD', date:'June 2026', rating:4, type:'business', title:'Solid overnight for work', text:'Fast Wi-Fi for the west, good desk, quiet enough to sleep before an early start. Dinner service was quick even when the dining room was busy. Good value at this price.', helpful:14, avatar:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=100&auto=format&fit=crop'},
-  {name:'Sandra W.', loc:'Adelaide, SA', date:'May 2026', rating:5, type:'family', title:'Felt like family', text:'Travelling with mum (78) and they went out of their way — ground floor room, helped with bags, early brekky. Can\'t fault the kindness. Rooms simple but immaculate.', helpful:22, avatar:'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?q=80&w=100&auto=format&fit=crop'},
-  {name:'Chris P.', loc:'Gold Coast, QLD', date:'May 2026', rating:3, type:'solo', title:'Good, but book dinner early', text:'Room fine and bed comfy. Only note — kitchen closes 8pm sharp and we nearly missed it arriving late. Call ahead if you\'re running behind and they\'ll look after you. Beer garden is a gem.', helpful:11, avatar:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop'},
-];
-let reviewFilter='all', reviewSort='helpful', visibleReviews=6;
-
-const PHOTOS = [
-  {src:'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=900&auto=format&fit=crop', cat:'exterior', cap:'Hotel frontage on the Warrego Hwy', h:'h-64'},
-  {src:'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=900&auto=format&fit=crop', cat:'rooms', cap:'Budget Queen — crisp linen, blackout blinds', h:'h-72'},
-  {src:'https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=900&auto=format&fit=crop', cat:'pub', cap:'Front bar — ice-cold pots & local yarns', h:'h-60'},
-  {src:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=900&auto=format&fit=crop', cat:'pub', cap:'Dining room — country feeds done right', h:'h-80'},
-  {src:'https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=900&auto=format&fit=crop', cat:'outback', cap:'Warrego Hwy heading west at golden hour', h:'h-64'},
-  {src:'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=900&auto=format&fit=crop', cat:'rooms', cap:'Twin Share — ideal for mates & crew', h:'h-60'},
-  {src:'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=900&auto=format&fit=crop', cat:'outback', cap:'Road-trip country — big skies guaranteed', h:'h-72'},
-  {src:'https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=900&auto=format&fit=crop', cat:'pub', cap:'Veranda dining under the festoon lights', h:'h-64'},
-  {src:'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=900&auto=format&fit=crop', cat:'rooms', cap:'Family Room — queen + 2 singles', h:'h-80'},
-  {src:'https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=900&auto=format&fit=crop', cat:'outback', cap:'Tregole National Park — 10km away', h:'h-60'},
-  {src:'https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=900&auto=format&fit=crop', cat:'exterior', cap:'Motel wing — park at your door', h:'h-72'},
-  {src:'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=900&auto=format&fit=crop', cat:'rooms', cap:'Deluxe King Spa Suite — veranda views', h:'h-64'},
-];
-let photoFilter='all', lightboxIndex=0;
-
-const AMENS = [
-  ['fa-wifi','Free Wi-Fi'],['fa-square-parking','Free parking'],['fa-utensils','Restaurant'],['fa-beer-mug-empty','Bar & bottleshop'],['fa-snowflake','Air conditioning'],['fa-tv','Flat-screen TV'],['fa-mug-saucer','Tea & coffee'],['fa-temperature-arrow-up','Hot showers'],['fa-shirt','Laundry*'],['fa-paw','Pet friendly*'],['fa-truck-fast','Truck parking'],['fa-baby','Family rooms'],['fa-wheelchair','Accessible'],['fa-credit-card','EFTPOS'],['fa-ban-smoking','Non-smoking'],['fa-bell-concierge','Room service*']
-];
-const NEARBY = [
-  {icon:'fa-landmark', name:'Morven Historical Museum', meta:'300m • 4 min walk • Gold coin', tag:'Must-see'},
-  {icon:'fa-tree', name:'Tregole National Park', meta:'10km • Ooline forest & sunset lookout', tag:'Nature'},
-  {icon:'fa-water', name:'Angellala Creek Bridge', meta:'30km • Famous flood marker & rest area', tag:'Photo stop'},
-  {icon:'fa-star-and-crescent', name:'Charleville Cosmos Centre', meta:'91km • Outback stargazing tours', tag:'Day trip'},
-  {icon:'fa-fish', name:'Augathella Meat Ant Statue', meta:'45km • Classic outback selfie', tag:'Fun'},
-];
-
-/* ============ HELPERS ============ */
-const $ = id => document.getElementById(id);
-const fmtINR = n => '₹' + Math.round(n).toLocaleString('en-IN');
-function toast(msg, ok=true){
-  const t=$('toast'); $('toastMsg').textContent=msg;
-  $('toastIcon').className = 'w-8 h-8 rounded-full grid place-items-center shrink-0 ' + (ok?'bg-emerald-500':'bg-terra');
-  $('toastIcon').innerHTML = ok?'<i class="fa-solid fa-check"></i>':'<i class="fa-solid fa-circle-info"></i>';
-  t.classList.remove('hidden');
-  gsap.fromTo(t,{y:20,opacity:0},{y:0,opacity:1,duration:.4,ease:'power3.out'});
-  clearTimeout(t._h); t._h=setTimeout(()=>{gsap.to(t,{y:10,opacity:0,duration:.35,onComplete:()=>t.classList.add('hidden')})},2600);
+function makeDotTexture() {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.4, 'rgba(255,255,255,0.55)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
 }
-function openModal(id){ const m=$(id); m.classList.remove('hidden'); m.classList.add('flex'); gsap.fromTo(m.children[1],{y:24,opacity:0,scale:.97},{y:0,opacity:1,scale:1,duration:.4,ease:'power3.out'}); document.body.style.overflow='hidden'; }
-function closeModal(id){ const m=$(id); m.classList.add('hidden'); m.classList.remove('flex'); document.body.style.overflow=''; }
-function openCall(){ openModal('callModal'); }
-function openShare(){ openModal('shareModal'); }
-function openDirections(){ window.open('https://www.google.com/maps/dir/?api=1&destination=78+Warrego+Hwy+Morven+QLD+4468+Australia','_blank'); toast('Opening directions to 78 Warrego Hwy, Morven'); }
-function copyAddress(){ navigator.clipboard?.writeText('78 Warrego Hwy, Morven QLD 4468, Australia'); toast('Address copied to clipboard'); }
-function copyPhone(){ navigator.clipboard?.writeText('(07) 4654 8316'); toast('Phone number copied'); }
-function copyLink(){ navigator.clipboard?.writeText($('shareLink').textContent); toast('Link copied — send it to your travel mates'); }
-function shareTo(net){
-  const url=encodeURIComponent($('shareLink').textContent);
-  const txt=encodeURIComponent('Morven Hotel Motel — 4.7★ (150 reviews), from ₹11,564. Sat 12 → Sun 13 Sept. 78 Warrego Hwy, Morven QLD');
-  if(net==='whatsapp') window.open('https://wa.me/?text='+txt+'%20'+url,'_blank');
-  else if(net==='facebook') window.open('https://www.facebook.com/sharer/sharer.php?u='+url,'_blank');
-  else if(net==='email') window.location.href='mailto:?subject=Morven Hotel Motel — great outback stay&body='+txt+'%0A'+url;
-  else if(navigator.share) navigator.share({title:'Morven Hotel Motel',text:'4.7★ outback stay from ₹11,564',url:$('shareLink').textContent});
-  else {copyLink();}
-}
-function goPhotos(){ document.getElementById('photos').scrollIntoView({behavior:'smooth'}); }
 
-/* ============ ROOMS / BOOKING ============ */
-function nights(){
-  const a=new Date($('checkin').value), b=new Date($('checkout').value);
-  const n=Math.round((b-a)/86400000); return isNaN(n)?1:Math.max(1,n);
-}
-function fmtDateLong(v){
-  const d=new Date(v+'T12:00:00'); if(isNaN(d)) return v;
-  return d.toLocaleDateString('en-AU',{weekday:'short', day:'numeric', month:'short'});
-}
-function fmtDateFull(v){
-  const d=new Date(v+'T12:00:00'); if(isNaN(d)) return v;
-  return d.toLocaleDateString('en-AU',{weekday:'short', day:'numeric', month:'short', year:'numeric'});
-}
-function renderRooms(){
-  const n=nights(), rc=parseInt($('roomCount').value||'1');
-  const box=$('roomList'); box.innerHTML='';
-  ROOMS.forEach((r,i)=>{
-    const total=r.price*n*rc;
-    const el=document.createElement('div');
-    el.className='room-card bg-white rounded-3xl border border-line shadow-card overflow-hidden grid md:grid-cols-[260px_1fr] reveal visible'+(selectedRoom===r.id?' selected':'');
-    el.style.opacity=1; el.style.transform='none';
-    el.innerHTML=`
-      <div class="relative h-[210px] md:h-full min-h-[210px]">
-        <img src="${r.img}" class="absolute inset-0 w-full h-full object-cover" alt="${r.name}">
-        <span class="absolute top-3 left-3 bg-outback/85 backdrop-blur text-white text-[11px] font-bold rounded-full px-3 py-1.5">${r.badge}</span>
-        <span class="absolute bottom-3 left-3 bg-white/90 backdrop-blur text-[11.5px] font-bold rounded-full px-3 py-1"><i class="fa-solid fa-star text-[11px] text-[#C9A86A]"></i> ${r.rating}</span>
-      </div>
-      <div class="p-5 md:p-6">
-        <div class="flex flex-wrap items-start justify-between gap-2">
-          <div><div class="font-serif font-bold text-[19px] leading-tight">${r.name}</div>
-          <div class="flex flex-wrap gap-1.5 mt-2">${r.tags.map(t=>`<span class="text-[11.5px] font-semibold bg-sand border border-line rounded-full px-2.5 py-1">${t}</span>`).join('')}</div></div>
-          <div class="text-right shrink-0"><div class="text-[11px] text-stone-400 line-through">${fmtINR(r.was*n*rc)}</div><div class="font-serif font-bold text-[24px]">${fmtINR(total)}</div><div class="text-[11.5px] text-stone-500">${n} night${n>1?'s':''} • incl. taxes</div></div>
-        </div>
-        <p class="text-[13.5px] text-stone-600 mt-3 leading-relaxed">${r.desc}</p>
-        <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12.5px] text-stone-600">
-          <span class="text-emerald-700 font-semibold"><i class="fa-solid fa-check mr-1"></i>Free cancellation 48h</span>
-          <span><i class="fa-solid fa-mug-saucer mr-1 text-golddark"></i>Breakfast available</span>
-          <span class="text-terra font-bold"><i class="fa-solid fa-fire mr-1"></i>Only ${r.left} left for 12 Sept!</span>
-        </div>
-        <div class="mt-4 flex flex-col sm:flex-row gap-2">
-          <button onclick="selectRoom('${r.id}')" class="flex-1 rounded-xl py-3 font-bold text-[14px] transition ${selectedRoom===r.id?'bg-emerald-600 text-white':'bg-outback text-white hover:bg-terra'}">${selectedRoom===r.id?'<i class="fa-solid fa-check mr-2"></i>Selected — tap again to change':'Select this room'}</button>
-          <button onclick="openCall()" class="sm:w-auto border border-line rounded-xl px-5 py-3 font-bold text-[13px] hover:bg-sand transition">Ask about this room</button>
-        </div>
-      </div>`;
-    box.appendChild(el);
+function makePastel(color) {
+  return new THREE.MeshPhysicalMaterial({
+    color: color,
+    roughness: 0.3,
+    metalness: 0.0,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.35,
+    sheen: 0.5,
+    sheenRoughness: 0.6,
+    sheenColor: new THREE.Color(0xffffff),
+    envMapIntensity: 0.55
   });
-  updateSummary();
 }
-function selectRoom(id){
-  selectedRoom=id; renderRooms();
-  const r=ROOMS.find(x=>x.id===id);
-  toast(`${r.name.split('—')[0].trim()} selected for 12–13 Sept`);
-  document.getElementById('prices').scrollIntoView({behavior:'smooth', block:'nearest'});
+
+/* ============================================================
+   RENDERER / SCENE / CAMERA / CONTROLS
+   ============================================================ */
+function initRenderer() {
+  const r = new THREE.WebGLRenderer({ antialias: true });
+  r.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  r.setSize(window.innerWidth, window.innerHeight);
+  r.shadowMap.enabled = true;
+  r.shadowMap.type = THREE.PCFSoftShadowMap;
+  r.toneMapping = THREE.ACESFilmicToneMapping;
+  r.toneMappingExposure = 1.1;
+  document.getElementById('app').appendChild(r.domElement);
+  state.renderer = r;
 }
-function updateSummary(){
-  const n=nights(), g=$('guests').selectedOptions[0].text, rc=$('roomCount').value;
-  const dl=`${fmtDateLong($('checkin').value)} → ${fmtDateLong($('checkout').value)}`;
-  $('summaryDates').textContent=dl; $('checkoutSummaryLine').textContent=`${fmtDateFull($('checkin').value)} → ${fmtDateFull($('checkout').value)} • ${n} night${n>1?'s':''}`;
-  $('summaryMeta').textContent=`${n} night${n>1?'s':''} • ${g} • ${rc} room${rc>1?'s':''}`;
-  $('nightLabel').textContent=`${n} night${n>1?'s':''} stay`;
-  $('checkinLabel').textContent=`${fmtDateFull($('checkin').value)} • from 2pm`;
-  $('checkoutLabel').textContent=`${fmtDateFull($('checkout').value)} • till 10am`;
-  const box=$('summaryRooms');
-  if(!selectedRoom){
-    box.innerHTML=`<div class="text-center text-stone-500 py-4 border border-dashed border-line rounded-2xl text-[13px]">Select a room to see your total here 👆<br><span class="text-[12px]">Prices starting at <strong>₹11,564</strong></span></div>`;
-    $('sumSubtotal').textContent='—'; $('sumTax').textContent='—'; $('sumTotal').textContent='—';
-    const b=$('reserveBtn'); b.disabled=true; b.className='mt-4 w-full bg-stone-200 text-stone-400 rounded-2xl py-3.5 font-bold text-[15px] transition disabled:cursor-not-allowed'; b.textContent='Select a room to continue';
-    return;
+
+function initScene() {
+  const s = new THREE.Scene();
+  s.fog = new THREE.Fog(0xf2dfee, 16, 38);
+  state.scene = s;
+
+  const cam = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 140);
+  cam.position.set(0, 5.5, 17);
+  state.camera = cam;
+
+  const controls = new OrbitControls(cam, state.renderer.domElement);
+  controls.target.set(0, 1.6, 0);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.minDistance = 5;
+  controls.maxDistance = 20;
+  controls.maxPolarAngle = Math.PI * 0.55;
+  controls.autoRotate = false;
+  controls.autoRotateSpeed = 0.7;
+  controls.enabled = false;
+  state.controls = controls;
+
+  state.raycaster = new THREE.Raycaster();
+  state.clock = new THREE.Clock();
+}
+
+/* ============================================================
+   LIGHTING & ENVIRONMENT
+   ============================================================ */
+function initLights() {
+  const s = state.scene;
+  s.add(new THREE.HemisphereLight(0xe6dcff, 0xffe2cc, 0.7));
+
+  const key = new THREE.DirectionalLight(0xffffff, 1.5);
+  key.position.set(6, 10, 7);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.near = 1;
+  key.shadow.camera.far = 30;
+  key.shadow.camera.left = -8;
+  key.shadow.camera.right = 8;
+  key.shadow.camera.top = 8;
+  key.shadow.camera.bottom = -8;
+  key.shadow.bias = -0.0004;
+  key.shadow.radius = 5;
+  s.add(key);
+
+  const rim = new THREE.DirectionalLight(0xffc9e3, 0.8);
+  rim.position.set(-7, 5, -7);
+  s.add(rim);
+
+  const fill = new THREE.DirectionalLight(0xc9e4ff, 0.45);
+  fill.position.set(-5, 3, 7);
+  s.add(fill);
+
+  const pmrem = new THREE.PMREMGenerator(state.renderer);
+  const env = pmrem.fromScene(new RoomEnvironment(), 0.04);
+  state.scene.environment = env.texture;
+  pmrem.dispose();
+}
+
+/* ============================================================
+   MATERIALS / GEOMETRIES / TEXTURES — centralized assets
+   ============================================================ */
+function initAssets() {
+  const A = state.assets;
+  A.pastelMats = [
+    makePastel(0xffb9d6), // pink
+    makePastel(0xc6b6ff), // lavender
+    makePastel(0xb2efdc), // mint
+    makePastel(0xffe9cf), // cream
+    makePastel(0xffc9ae), // peach
+    makePastel(0xbfdcff)  // sky
+  ];
+  A.geos.blob    = new THREE.SphereGeometry(1, 72, 72);
+  A.geos.knot    = new THREE.TorusKnotGeometry(0.5, 0.16, 220, 32);
+  A.geos.sphere  = new THREE.SphereGeometry(0.55, 48, 48);
+  A.geos.torus   = new THREE.TorusGeometry(0.55, 0.24, 32, 72);
+  A.geos.capsule = new THREE.CapsuleGeometry(0.26, 0.55, 8, 24);
+  A.geos.bubble  = new THREE.SphereGeometry(0.3, 32, 32);
+  A.geos.platform= new THREE.CylinderGeometry(3.6, 3.95, 0.35, 72);
+  A.geos.ring    = new THREE.TorusGeometry(3.6, 0.05, 16, 120);
+  A.geos.ground  = new THREE.CircleGeometry(45, 64);
+  A.geos.spark   = new THREE.SphereGeometry(0.06, 10, 10);
+  A.tex.dot      = makeDotTexture();
+}
+
+/* ============================================================
+   GENERATION & ASSEMBLY
+   ============================================================ */
+function buildSky() {
+  const geo = new THREE.SphereGeometry(70, 32, 32);
+  const mat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    uniforms: {
+      topColor: { value: new THREE.Color(0xaeb9f2) },
+      midColor: { value: new THREE.Color(0xf0dcf5) },
+      botColor: { value: new THREE.Color(0xffe6d2) }
+    },
+    vertexShader: `
+      varying vec3 vWorld;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorld = wp.xyz;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 topColor;
+      uniform vec3 midColor;
+      uniform vec3 botColor;
+      varying vec3 vWorld;
+      void main() {
+        float h = normalize(vWorld).y;
+        vec3 col = h > 0.0
+          ? mix(midColor, topColor, pow(h, 0.75))
+          : mix(midColor, botColor, pow(-h, 0.65));
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `
+  });
+  state.scene.add(new THREE.Mesh(geo, mat));
+}
+
+function addFloaty(mesh, opts) {
+  const u = mesh.userData;
+  u.baseY = opts.y;
+  u.amp = opts.amp !== undefined ? opts.amp : 0.15;
+  u.speed = opts.speed !== undefined ? opts.speed : 0.8;
+  u.phase = opts.phase !== undefined ? opts.phase : 0;
+  u.rotSpeed = opts.rotSpeed !== undefined ? opts.rotSpeed : 0.3;
+  u.rotSpeedX = opts.rotSpeedX || 0;
+  u.baseScale = opts.scale !== undefined ? opts.scale : 1;
+  u.curScale = u.baseScale;
+  u.pop = 0;
+  u.colorIndex = opts.colorIndex || 0;
+  mesh.position.set(opts.x, opts.y, opts.z || 0);
+  if (opts.rx) mesh.rotation.x = opts.rx;
+  if (opts.rz) mesh.rotation.z = opts.rz;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  state.scene.add(mesh);
+  state.floaties.push(mesh);
+  return mesh;
+}
+
+function buildWorld() {
+  const A = state.assets;
+  const M = A.pastelMats;
+
+  const platform = new THREE.Mesh(A.geos.platform, M[3]);
+  platform.position.y = -0.175;
+  platform.receiveShadow = true;
+  state.scene.add(platform);
+
+  const ring = new THREE.Mesh(A.geos.ring, M[0]);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = 0;
+  state.scene.add(ring);
+
+  const ground = new THREE.Mesh(
+    A.geos.ground,
+    new THREE.ShadowMaterial({ opacity: 0.13 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.36;
+  ground.receiveShadow = true;
+  state.scene.add(ground);
+
+  // central squishy blob
+  state.blobBase = A.geos.blob.attributes.position.array.slice();
+  const blob = new THREE.Mesh(A.geos.blob, M[0]);
+  addFloaty(blob, { x: 0, y: 1.32, z: 0, scale: 1.18, amp: 0.1, speed: 0.7, phase: 0, rotSpeed: 0.15, colorIndex: 0 });
+  state.blob = blob;
+
+  addFloaty(new THREE.Mesh(A.geos.knot, M[1]),    { x: -2.7, y: 2.5,  z: -0.7, scale: 1,    amp: 0.22, speed: 0.6, phase: 1.3, rotSpeed: 0.4,  rotSpeedX: 0.25, colorIndex: 1 });
+  addFloaty(new THREE.Mesh(A.geos.sphere, M[2]),  { x: 2.6,  y: 1.7,  z: 0.6,  scale: 1,    amp: 0.18, speed: 0.9, phase: 2.1, rotSpeed: 0.2,  colorIndex: 2 });
+  addFloaty(new THREE.Mesh(A.geos.torus, M[4]),   { x: 2.0,  y: 3.3,  z: -1.5, scale: 1,    amp: 0.2,  speed: 0.7, phase: 0.6, rotSpeed: 0.35, rotSpeedX: 0.4, rx: 0.5, colorIndex: 4 });
+  addFloaty(new THREE.Mesh(A.geos.capsule, M[3]), { x: -2.1, y: 1.0,  z: 1.4,  scale: 1,    amp: 0.14, speed: 1.0, phase: 3.4, rotSpeed: 0.3,  rz: 0.7, colorIndex: 3 });
+  addFloaty(new THREE.Mesh(A.geos.bubble, M[5]),  { x: 1.0,  y: 0.85, z: 1.7,  scale: 1,    amp: 0.2,  speed: 1.2, phase: 4.2, rotSpeed: 0.1,  colorIndex: 5 });
+  addFloaty(new THREE.Mesh(A.geos.bubble, M[0]),  { x: -1.3, y: 3.6,  z: -0.6, scale: 0.8,  amp: 0.24, speed: 0.9, phase: 5.1, rotSpeed: 0.15, colorIndex: 0 });
+  addFloaty(new THREE.Mesh(A.geos.sphere, M[1]),  { x: 3.4,  y: 2.6,  z: 1.2,  scale: 0.55, amp: 0.2,  speed: 1.1, phase: 2.8, rotSpeed: 0.25, colorIndex: 1 });
+
+  buildDust();
+  buildBurstPool();
+}
+
+function buildDust() {
+  const count = 160;
+  const positions = new Float32Array(count * 3);
+  const speeds = new Float32Array(count);
+  for (let i = 0; i < count; i++) {
+    const r = 3 + Math.random() * 9;
+    const a = Math.random() * Math.PI * 2;
+    positions[i * 3]     = Math.cos(a) * r;
+    positions[i * 3 + 1] = Math.random() * 9;
+    positions[i * 3 + 2] = Math.sin(a) * r;
+    speeds[i] = 0.1 + Math.random() * 0.25;
   }
-  const r=ROOMS.find(x=>x.id===selectedRoom);
-  const sub=r.price*n*parseInt(rc), tax=sub*0.10, tot=sub+tax;
-  // Note: display base as starting price inclusive; keep simple
-  box.innerHTML=`<div class="flex gap-3 items-center bg-sand rounded-2xl p-3"><img src="${r.img}" class="w-14 h-14 rounded-xl object-cover" alt=""><div class="flex-1"><div class="font-bold text-[13px] leading-tight">${r.name}</div><div class="text-[12px] text-stone-500">${fmtINR(r.price)} × ${n} night${n>1?'s':''} × ${rc} room${rc>1?'s':''}</div></div><button onclick="clearRoom()" class="text-stone-400 hover:text-terra"><i class="fa-solid fa-xmark"></i></button></div>`;
-  $('sumSubtotal').textContent=fmtINR(sub);
-  $('sumTax').textContent=fmtINR(tax);
-  $('sumTotal').textContent=fmtINR(tot);
-  const b=$('reserveBtn'); b.disabled=false; b.className='mt-4 w-full btn-sheen bg-terra hover:bg-terradark text-white rounded-2xl py-3.5 font-bold text-[15px] transition shadow-gold'; b.innerHTML=`Reserve — ${fmtINR(tot)} →`;
-  $('checkoutRooms').innerHTML=`<div class="flex gap-2 items-center"><img src="${r.img}" class="w-12 h-12 rounded-xl object-cover"><div><div class="font-bold">${r.name}</div><div class="text-stone-500">${dl} • ${g}</div></div></div>`;
-  $('checkoutTotals').innerHTML=`<div class="flex justify-between"><span class="text-stone-500">Subtotal</span><strong>${fmtINR(sub)}</strong></div><div class="flex justify-between"><span class="text-stone-500">GST (10%)</span><strong>${fmtINR(tax)}</strong></div><div class="flex justify-between text-[15px] pt-1 border-t border-line mt-1"><span class="font-bold">Total</span><span class="font-serif font-bold text-[20px]">${fmtINR(tot)}</span></div>`;
-}
-function clearRoom(){ selectedRoom=null; renderRooms(); }
-function checkAvailability(){
-  const ci=$('checkin').value, co=$('checkout').value;
-  if(!ci||!co||new Date(co)<=new Date(ci)){ toast('Check-out must be after check-in', false); return; }
-  const b=$('availBanner'); b.classList.remove('hidden'); b.classList.add('flex');
-  $('availText').textContent=`${ROOMS.length} room types available for ${fmtDateFull(ci)} → ${fmtDateFull(co)} (${nights()} night${nights()>1?'s':''}).`;
-  gsap.fromTo(b,{y:10,opacity:0},{y:0,opacity:1,duration:.5});
-  renderRooms();
-  toast(`Availability updated — from ₹11,564 for ${fmtDateLong(ci)}`);
-  $('roomList').scrollIntoView({behavior:'smooth', block:'start'});
-}
-function openCheckout(){
-  if(!selectedRoom) return;
-  openModal('checkoutModal');
-}
-function confirmBooking(){
-  const fn=$('fFirst').value.trim(), em=$('fEmail').value.trim(), ph=$('fPhone').value.trim();
-  if(!fn||!em||!ph){ toast('Please add your name, email & phone', false); return; }
-  if(!$('fAgree').checked){ toast('Please tick the acknowledgement box', false); return; }
-  const ref='MH-'+Math.floor(100000+Math.random()*900000);
-  $('confRef').textContent=ref; $('confName').textContent=fn;
-  $('confTotal').textContent=$('sumTotal').textContent+' • '+$('summaryDates').textContent;
-  closeModal('checkoutModal'); openModal('confirmModal');
-}
-
-/* ============ REVIEWS ============ */
-function stars(n){ let s=''; for(let i=1;i<=5;i++) s+=`<i class="fa-solid fa-star ${i<=n?'star-gold':'text-line'}"></i>`; return s; }
-function renderBars(){
-  const dist=[{s:5,c:112},{s:4,c:28},{s:3,c:6},{s:2,c:2},{s:1,c:2}];
-  $('ratingBars').innerHTML=dist.map(d=>`<div class="flex items-center gap-2 text-[12.5px]"><span class="w-6 font-bold">${d.s}★</span><div class="flex-1 h-2.5 bg-cream border border-line rounded-full overflow-hidden"><div class="h-full rounded-full ${d.s>=4?'bg-gradient-to-r from-gold to-terra':'bg-stone-300'}" style="width:${(d.c/150*100).toFixed(1)}%"></div></div><span class="w-8 text-right text-stone-500 font-semibold">${d.c}</span></div>`).join('');
-}
-function getFilteredReviews(){
-  let list=[...REVIEWS];
-  if(reviewFilter==='5') list=list.filter(r=>r.rating===5);
-  else if(reviewFilter==='4') list=list.filter(r=>r.rating===4);
-  else if(reviewFilter==='3') list=list.filter(r=>r.rating<=3);
-  else if(reviewFilter==='family') list=list.filter(r=>r.type==='family');
-  else if(reviewFilter==='couple') list=list.filter(r=>r.type==='couple');
-  if(reviewSort==='recent') list.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  else if(reviewSort==='highest') list.sort((a,b)=>b.rating-a.rating);
-  else if(reviewSort==='lowest') list.sort((a,b)=>a.rating-b.rating);
-  else list.sort((a,b)=>b.helpful-a.helpful);
-  return list;
-}
-function renderReviews(){
-  const list=getFilteredReviews();
-  const show=list.slice(0,visibleReviews);
-  $('reviewList').innerHTML=show.map((r,i)=>`
-    <article class="review-card bg-white rounded-3xl border border-line p-5 shadow-card">
-      <div class="flex items-start justify-between gap-3">
-        <div class="flex items-center gap-3"><img src="${r.avatar}" class="w-11 h-11 rounded-full object-cover border-2 border-sand" alt=""><div><div class="font-bold text-[14px]">${r.name} <span class="font-normal text-stone-400 text-[12px]">• ${r.loc}</span></div><div class="text-[11.5px] text-stone-500">${r.date} • ${r.type[0].toUpperCase()+r.type.slice(1)} stay • Verified</div></div></div>
-        <span class="bg-outback text-white text-[12px] font-bold rounded-full px-2.5 py-1 shrink-0">${r.rating}.0</span>
-      </div>
-      <div class="mt-2 flex gap-1 text-[13px]">${stars(r.rating)}</div>
-      <div class="font-bold text-[14.5px] mt-1.5">“${r.title}”</div>
-      <p class="text-[13.5px] text-stone-600 leading-relaxed mt-1">${r.text}</p>
-      <div class="mt-3 pt-3 border-t border-line flex items-center justify-between">
-        <button onclick="helpful(this)" class="text-[12.5px] font-semibold text-stone-500 hover:text-terra"><i class="fa-regular fa-thumbs-up mr-1"></i>Helpful (<span>${r.helpful}</span>)</button>
-        <span class="text-[11.5px] text-stone-400"><i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>Stayed ${i%2? 'Sat 12 Sept':'weekend'}</span>
-      </div>
-    </article>`).join('') || `<div class="col-span-2 text-center py-10 text-stone-500">No reviews in this filter yet — be the first!</div>`;
-  $('remainingCount').textContent=Math.max(0, 150 - visibleReviews - (150 - REVIEWS.length - 8));
-  // update chips
-  document.querySelectorAll('.filter-chip').forEach(c=>{
-    const on=c.dataset.filter===reviewFilter;
-    c.className='filter-chip rounded-full px-4 py-1.5 text-[12.5px] font-bold transition '+(on?'bg-outback text-white':'bg-cream border border-line hover:border-terra');
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const mat = new THREE.PointsMaterial({
+    size: 0.12, map: state.assets.tex.dot, transparent: true,
+    opacity: 0.55, depthWrite: false, color: 0xffffff
   });
-}
-function helpful(btn){ const s=btn.querySelector('span'); s.textContent=parseInt(s.textContent)+1; btn.classList.add('text-terra'); toast('Thanks for your feedback'); }
-let userRating=5;
-function openReviewModal(){ openModal('reviewModal'); paintStars(5); }
-function paintStars(n){ userRating=n; document.querySelectorAll('#starInput button i').forEach((el,i)=>{ el.className='fa-solid fa-star '+(i<n?'star-gold':'text-line'); }); }
-function submitReview(){
-  const name=$('rName').value.trim()||'Guest Traveller', txt=$('rText').value.trim();
-  if(!txt){ toast('Please write a few words first', false); return; }
-  REVIEWS.unshift({name, loc:'Australia', date:'Sept 2026', rating:userRating, type:$('rType').value, title:'My stay at Morven', text:txt.replace(/</g,'&lt;'), helpful:0, avatar:'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100&auto=format&fit=crop'});
-  $('rText').value=''; $('rName').value=''; closeModal('reviewModal'); visibleReviews=Math.max(visibleReviews,6); renderReviews();
-  toast('Review posted — thanks for supporting a country pub!');
+  state.dust = new THREE.Points(geo, mat);
+  state.dustSpeeds = speeds;
+  state.dustCount = count;
+  state.scene.add(state.dust);
 }
 
-/* ============ PHOTOS ============ */
-function renderPhotos(){
-  const grid=$('photoGrid'); grid.innerHTML='';
-  const list=PHOTOS.filter(p=>photoFilter==='all'||p.cat===photoFilter);
-  list.forEach((p,i)=>{
-    const d=document.createElement('div');
-    d.className='gallery-item break-inside-avoid rounded-2xl overflow-hidden relative group cursor-pointer shadow-card border border-line';
-    d.innerHTML=`<img src="${p.src}" loading="lazy" class="w-full ${p.h} object-cover" alt="${p.cap}"><div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition"></div><div class="absolute bottom-0 p-3 text-white text-[12.5px] font-semibold translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition">${p.cap}</div><div class="absolute top-2 right-2 bg-black/50 backdrop-blur text-white text-[11px] rounded-full px-2.5 py-1 capitalize">${p.cat}</div>`;
-    d.onclick=()=>openLightbox(PHOTOS.indexOf(p));
-    grid.appendChild(d);
-  });
-  document.querySelectorAll('.pf-btn').forEach(b=>{
-    const on=b.dataset.cat===photoFilter;
-    b.className='pf-btn rounded-full px-5 py-2 text-[13px] font-bold transition '+(on?'bg-outback text-white':'bg-white border border-line hover:border-terra');
-  });
-}
-function openLightbox(i){ lightboxIndex=i; updateLightbox(); const l=$('lightbox'); l.classList.remove('hidden'); l.classList.add('flex'); document.body.style.overflow='hidden'; }
-function closeLightbox(){ const l=$('lightbox'); l.classList.add('hidden'); l.classList.remove('flex'); document.body.style.overflow=''; }
-function stepLightbox(d){ lightboxIndex=(lightboxIndex+d+PHOTOS.length)%PHOTOS.length; updateLightbox(); }
-function updateLightbox(){ const p=PHOTOS[lightboxIndex]; $('lightboxImg').src=p.src.replace('w=900','w=1600'); $('lightboxCap').textContent=p.cap+' • Morven Hotel Motel'; $('lightboxCount').textContent=(lightboxIndex+1)+' / '+PHOTOS.length; }
-
-/* ============ MISC RENDER ============ */
-function renderAmens(){ $('amenGrid').innerHTML=AMENS.map(a=>`<div class="flex items-center gap-2.5 bg-cream border border-line rounded-xl px-3 py-2.5"><i class="fa-solid ${a[0]} text-terra w-5 text-center"></i>${a[1]}</div>`).join(''); }
-function renderNearby(){ $('nearbyList').innerHTML=NEARBY.map(n=>`<div class="flex items-center gap-3 bg-cream border border-line rounded-2xl p-3 hover:border-terra transition"><span class="w-10 h-10 rounded-xl bg-outback text-gold grid place-items-center shrink-0"><i class="fa-solid ${n.icon}"></i></span><div class="flex-1"><div class="font-bold text-[13.5px]">${n.name}</div><div class="text-[12px] text-stone-500">${n.meta}</div></div><span class="text-[11px] font-bold bg-sand border border-line rounded-full px-2.5 py-1">${n.tag}</span></div>`).join(''); }
-function scrollHighlights(dir){ $('highlightRow').scrollBy({left:dir*300,behavior:'smooth'}); }
-
-/* ============ EVENTS ============ */
-document.querySelectorAll('.filter-chip').forEach(c=>c.addEventListener('click',()=>{reviewFilter=c.dataset.filter; visibleReviews=6; renderReviews();}));
-$('sortReviews').addEventListener('change',e=>{reviewSort=e.target.value; renderReviews();});
-$('loadMoreReviews').addEventListener('click',()=>{visibleReviews+=4; renderReviews(); if(visibleReviews>=getFilteredReviews().length+2) toast('You\'ve seen all loaded reviews — 150 total on Google & TripAdvisor');});
-document.querySelectorAll('.pf-btn').forEach(b=>b.addEventListener('click',()=>{photoFilter=b.dataset.cat; renderPhotos();}));
-document.querySelectorAll('#starInput button').forEach(b=>b.addEventListener('click',()=>paintStars(parseInt(b.dataset.s))));
-['checkin','checkout','guests','roomCount'].forEach(id=>$(id).addEventListener('change',()=>{ if($(id).id==='checkin'||$(id).id==='checkout'){ const ci=new Date($('checkin').value), co=new Date($('checkout').value); if(co<=ci){ const nx=new Date(ci); nx.setDate(nx.getDate()+1); $('checkout').value=nx.toISOString().slice(0,10); } } updateSummary(); }));
-$('menuBtn').addEventListener('click',()=>$('mobileMenu').classList.toggle('hidden'));
-document.querySelectorAll('.mobile-link').forEach(a=>a.addEventListener('click',()=>$('mobileMenu').classList.add('hidden')));
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){['callModal','shareModal','checkoutModal','reviewModal','confirmModal'].forEach(closeModal); closeLightbox();} if(!$('lightbox').classList.contains('hidden')){ if(e.key==='ArrowRight') stepLightbox(1); if(e.key==='ArrowLeft') stepLightbox(-1);} });
-
-/* Scrollspy */
-const spySections=['overview','prices','reviews','about','location','photos'];
-const spyObs=new IntersectionObserver(es=>{es.forEach(en=>{ if(en.isIntersecting){ document.querySelectorAll('.tab-link').forEach(t=>t.classList.toggle('active',t.dataset.tab===en.target.id)); } })},{rootMargin:'-40% 0px -55% 0px'});
-spySections.forEach(id=>{const el=document.getElementById(id); if(el) spyObs.observe(el);});
-
-/* Reveal + nav */
-gsap.registerPlugin(ScrollTrigger);
-function initAnims(){
-  document.querySelectorAll('.reveal').forEach(el=>{
-    gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%',once:true}});
-  });
-  // duplicate marquee for seamless loop
-  const m=$('marqueeContent'); m.parentElement.appendChild(m.cloneNode(true));
-  window.addEventListener('scroll',()=>{ $('mainNav').classList.toggle('scrolled', window.scrollY>10); },{passive:true});
+function buildBurstPool() {
+  const M = state.assets.pastelMats;
+  for (let i = 0; i < 90; i++) {
+    const m = new THREE.Mesh(state.assets.geos.spark, M[i % M.length]);
+    m.visible = false;
+    state.scene.add(m);
+    state.burstPool.push({
+      mesh: m, vel: new THREE.Vector3(),
+      life: 0, maxLife: 1, baseScale: 1
+    });
+  }
 }
 
-/* Init */
-renderRooms(); renderBars(); renderReviews(); renderPhotos(); renderAmens(); renderNearby(); initAnims();
-// Preselect queen to showcase total? Keep unselected but show banner after 1.2s for demo delight
-setTimeout(()=>{ if(!selectedRoom){ const b=$('availBanner'); b.classList.remove('hidden'); b.classList.add('flex'); $('availText').textContent='4 room types available for Sat, 12 Sept → Sun, 13 Sept (1 night).'; } },1200);
+/* ============================================================
+   ANIMATION
+   ============================================================ */
+function updateIntro(dt) {
+  if (state.introDone) return;
+  state.intro = Math.min(state.intro + dt / 2.2, 1);
+  const k = easeOutCubic(state.intro);
+  const r = THREE.MathUtils.lerp(17, 10.5, k);
+  const y = THREE.MathUtils.lerp(5.5, 2.6, k);
+  state.camera.position.set(0, y, r);
+  state.camera.lookAt(0, 1.6, 0);
+  if (state.intro >= 1) {
+    state.introDone = true;
+    state.controls.enabled = true;
+    state.controls.autoRotate = true;
+  }
+}
+
+function updateFloaties(t, dt) {
+  for (const f of state.floaties) {
+    const u = f.userData;
+    f.position.y = u.baseY + Math.sin(t * u.speed + u.phase) * u.amp;
+    f.rotation.y += u.rotSpeed * dt;
+    f.rotation.x += u.rotSpeedX * dt;
+    const target = (state.hovered === f) ? u.baseScale * 1.14 : u.baseScale;
+    u.curScale += (target - u.curScale) * Math.min(dt * 8, 1);
+    u.pop = Math.max(0, u.pop - dt * 3);
+    f.scale.setScalar(u.curScale * (1 + u.pop * 0.22));
+  }
+}
+
+function updateBlob(t) {
+  const geo = state.assets.geos.blob;
+  const pos = geo.attributes.position;
+  const base = state.blobBase;
+  for (let i = 0; i < pos.count; i++) {
+    const i3 = i * 3;
+    const x = base[i3], y = base[i3 + 1], z = base[i3 + 2];
+    const w = Math.sin(x * 2.4 + t * 1.3) * Math.cos(y * 2.1 + t * 1.0) * Math.sin(z * 2.6 + t * 0.8);
+    const d = 1 + w * 0.07;
+    pos.setXYZ(i, x * d, y * d, z * d);
+  }
+  pos.needsUpdate = true;
+  geo.computeVertexNormals();
+}
+
+function updateDust(dt, t) {
+  const pos = state.dust.geometry.attributes.position;
+  const arr = pos.array;
+  for (let i = 0; i < state.dustCount; i++) {
+    const i3 = i * 3;
+    arr[i3 + 1] += state.dustSpeeds[i] * dt;
+    if (arr[i3 + 1] > 9) arr[i3 + 1] = 0;
+    arr[i3] += Math.sin(t * 0.4 + i * 1.7) * 0.0012;
+  }
+  pos.needsUpdate = true;
+}
+
+function updateBurst(dt) {
+  for (const p of state.burstPool) {
+    if (p.life <= 0) continue;
+    p.life -= dt;
+    p.vel.y -= 4.5 * dt;
+    p.mesh.position.addScaledVector(p.vel, dt);
+    const k = Math.max(p.life / p.maxLife, 0);
+    p.mesh.scale.setScalar(Math.max(k, 0.001) * p.baseScale);
+    p.mesh.rotation.x += dt * 3;
+    p.mesh.rotation.y += dt * 2;
+    if (p.life <= 0) p.mesh.visible = false;
+  }
+}
+
+function updateHover() {
+  state.raycaster.setFromCamera(state.pointer, state.camera);
+  const hits = state.raycaster.intersectObjects(state.floaties, false);
+  const h = hits.length ? hits[0].object : null;
+  if (h !== state.hovered) {
+    state.hovered = h;
+    state.renderer.domElement.style.cursor = h ? 'pointer' : 'grab';
+  }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(state.clock.getDelta(), 0.05);
+  const t = state.clock.elapsedTime;
+
+  updateIntro(dt);
+  updateFloaties(t, dt);
+  updateBlob(t);
+  updateDust(dt, t);
+  updateBurst(dt);
+  updateHover();
+
+  state.controls.update();
+  state.renderer.render(state.scene, state.camera);
+}
+
+/* ============================================================
+   INTERACTION
+   ============================================================ */
+function burst(pos) {
+  const M = state.assets.pastelMats;
+  let count = 0;
+  for (const p of state.burstPool) {
+    if (p.life > 0) continue;
+    p.life = p.maxLife = 0.7 + Math.random() * 0.5;
+    p.mesh.visible = true;
+    p.mesh.material = M[Math.floor(Math.random() * M.length)];
+    p.mesh.position.copy(pos);
+    p.vel.set((Math.random() - 0.5) * 2.4, Math.random() * 2.2 + 0.8, (Math.random() - 0.5) * 2.4);
+    p.baseScale = 0.6 + Math.random() * 0.9;
+    p.mesh.scale.setScalar(p.baseScale);
+    if (++count >= 16) break;
+  }
+}
+
+function onPointerMove(e) {
+  state.pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+  state.pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+}
+
+function onPointerDown(e) {
+  state.downPos.x = e.clientX;
+  state.downPos.y = e.clientY;
+}
+
+function onPointerUp(e) {
+  const dx = e.clientX - state.downPos.x;
+  const dy = e.clientY - state.downPos.y;
+  if (dx * dx + dy * dy > 36) return;
+  state.raycaster.setFromCamera(state.pointer, state.camera);
+  const hits = state.raycaster.intersectObjects(state.floaties, false);
+  if (hits.length) {
+    const obj = hits[0].object;
+    burst(hits[0].point);
+    obj.userData.pop = 1;
+    const u = obj.userData;
+    u.colorIndex = (u.colorIndex + 1) % state.assets.pastelMats.length;
+    obj.material = state.assets.pastelMats[u.colorIndex];
+  }
+}
+
+function onResize() {
+  state.camera.aspect = window.innerWidth / window.innerHeight;
+  state.camera.updateProjectionMatrix();
+  state.renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function bindEvents() {
+  window.addEventListener('resize', onResize);
+  window.addEventListener('pointermove', onPointerMove);
+  window.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointerup', onPointerUp);
+}
+
+/* ============================================================
+   INIT & START
+   ============================================================ */
+function init() {
+  initRenderer();
+  initScene();
+  initLights();
+  initAssets();
+  buildSky();
+  buildWorld();
+  bindEvents();
+}
+
+init();
+animate();
 </script>
 </body>
 </html>
